@@ -1,10 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './css/index.css'
-import App from './App.jsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
+import { SoundProvider } from './context/SoundContext';
+import RootWithMusic from './context/RootWithMusic';
+import './css/index.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    <BrowserRouter>
+      <SoundProvider>
+        <RootWithMusic />
+      </SoundProvider>
+    </BrowserRouter>
+  </StrictMode>
+);
