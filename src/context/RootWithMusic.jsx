@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route } from 'react-router';
-import styles from '../css/modules/Menu.module.css';
+import { Routes, Route } from 'react-router-dom';
 import App from '../App.jsx';
 import Menu from '../pages/Menu';
 import Match from '../features/Match';
@@ -37,7 +36,7 @@ function RootWithMusic() {
   };
 
   return (
-    <div className={styles.menuUI}>
+    <div>
       <audio ref={audioRef} src={bgMusic} loop preload="auto" />
       <Routes>
         <Route path="/" element={<App playMusic={playMusic} />} />

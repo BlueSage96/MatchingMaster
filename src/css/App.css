@@ -4,3 +4,37 @@
   padding: 2rem;
   text-align: center;
 }
+
+body {
+  background-image: url("../assets/cover.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: hidden;
+}
+
+h1, h2, h3, p {
+  margin-top: 20px;
+  text-shadow: 1px 1px black;
+  color: white;
+}
+
+.buttonSound {
+   background-color: black;
+   border: 2px solid gray;
+   border-radius: 6px;
+   box-shadow: 1px 1px gray;
+   font-size: 25px;
+}
+
+.buttonSound:hover {
+   background-color: red;
+   cursor: pointer;
+}
+
+.backButton { 
+  position: absolute;
+  font-size: 25px;
+  left: 40px; 
+  top: 20px;
+}

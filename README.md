@@ -5,7 +5,7 @@ Matching Master is a card matching game made in React and Vite. Match all card p
 
 DEPENDICIES:
 react + vite
-react-router
+react-router-dom
 prettier
 babel
 confetti

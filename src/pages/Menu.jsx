@@ -9,5 +9,28 @@ import Marvel from '../assets/marvel.png';
 import Start from '../assets/start.png';
 import ButtonSound from '../shared/ButtonSound';
 
-function Menu() {}
+function Menu ({playMusic}) {
+    const navigate = useNavigate();
+    const [selectMode, setSelectMode] = useState(null);
+    
+    // Choosing the game mode
+    const handleSelectMode = (mode) => {
+        setSelectMode(mode);
+    }
+
+    return (
+        <>
+            <div className={MenuStyle.menuUI}
+            
+            >
+                <p>Placeholder text</p>
+                {/* Settings and instructions */}
+                <div>
+                    
+                </div>
+                
+            </div>
+        </>
+    )
+}
 export default Menu;
