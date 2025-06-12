@@ -1,12 +1,11 @@
 // import { useState } from 'react';
-import './css/App.css';
-import Menu from './pages/Menu.jsx';
+import '../css/App.css';
+import Menu from './Menu.jsx';
 
 function App() {
-  
   return (
     <>
-     <Menu />
+      <Menu />
     </>
   );
 }
