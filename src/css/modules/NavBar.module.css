@@ -1,0 +1,49 @@
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+    outline: none;
+  }
+  
+  .activeLink {
+    border-bottom: 2px solid blue; /* or your highlight */
+  }
+
+  .navbar:hover .SetText, .navbar:hover .InfoText{
+    color: red;
+    cursor: pointer;
+}
+
+.Settings, .Info {
+    width: 80px;
+    height: 80px;
+    /* position: absolute; */
+    top: 40px;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+}
+
+/* remove .Settings and .Info later when I add my ButtonSound */
+.Settings {
+    position: absolute;
+    left: 20px;
+}
+
+
+.SetText, .InfoText {
+    text-shadow: 2px 1px black;
+}
+
+.SetText {
+    position: absolute;
+    left: 25px;
+    top: 80px;
+}
+
+.InfoText {
+    position: absolute;
+    right: 15px;
+    top: 70px;
+}
+
+  
