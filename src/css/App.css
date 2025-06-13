@@ -36,8 +36,13 @@ html, body, #root {
   border-radius: 10px;
 }
 
-h1, h2, h3, p, span {
-  /* margin-top: 20px; */
+h1, h2, h3, p {
+  margin-top: 20px;
+  text-shadow: 1px 1px black;
+  color: white;
+}
+
+span {
   text-shadow: 1px 1px black;
 }
 

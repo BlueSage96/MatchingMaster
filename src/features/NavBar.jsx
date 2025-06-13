@@ -28,13 +28,13 @@ function NavBar() {
       </NavLink>
 
       <NavLink
-        to="/information"
+        to="/instructions"
         className={({ isActive }) =>
           isActive ? `${NavStyle.navItem} ${NavStyle.activeLink}` : NavStyle.navItem
         }
       >
-        <img className={NavStyle.Info} src={Info} alt="Info" />
-        <span className={NavStyle.InfoText}>Information</span>
+        <img className={NavStyle.Info} src={Info} alt="Instructions icon" />
+        <span className={NavStyle.InfoText}>Instructions</span>
       </NavLink>
     </nav>
   );
