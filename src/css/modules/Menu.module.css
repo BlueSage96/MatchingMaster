@@ -1,10 +1,69 @@
-/* .menuUI {
-    background-image: url("../../assets/background.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 1200px;
-    height: 950px;
-    border: 2px solid black;
-    border-radius: 8px;
-    position: relative; 
- } */
+
+.Logo {
+    width: 480px;
+    height: 480px;
+    object-fit: contain;
+    position: relative;
+    top: -75px;
+    box-shadow: none !important;
+}
+
+.menuUI {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .ModeDiv {
+    width: 100%;
+    position: absolute;
+  }
+  
+  .ColModeBtn, .MarModeBtn {
+    position: absolute;
+    display: block;
+    z-index: 1;
+    cursor: pointer;
+    bottom: -40px;
+    box-shadow: none !important;
+  }
+
+  .ColModeBtn {
+    left: 500px;
+  }
+
+  .MarModeBtn {
+    right: 500px;
+  }
+  
+  .Color, .Marvel {
+    width: 175px;
+    height: 200px;
+    display: block;
+  }
+
+  .StartContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+.StartBtn {
+    position: absolute;
+    display: block;
+    z-index: 1;
+    cursor: pointer;
+    box-shadow: none !important;
+    bottom: 50px;
+  }
+
+  .Start {
+    width: 350px;
+    height: 175px;
+    object-fit: contain;
+    pointer-events: auto;
+    user-select: none;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+  }
