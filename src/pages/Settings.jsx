@@ -1,7 +1,7 @@
 function Settings () {
     return (
         <>
-            <p>TBD</p>
+            <p style={{fontSize: "60px", position: "absolute", top:"200px"}}>Settings here</p>
         </>
     )
 }

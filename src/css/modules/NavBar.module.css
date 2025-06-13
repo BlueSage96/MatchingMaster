@@ -1,49 +1,89 @@
 .navbar {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px;
-    outline: none;
-  }
-  
-  .activeLink {
-    border-bottom: 2px solid blue; /* or your highlight */
+    justify-content: center;
+    gap: 30px;
+    padding-top: 10px;
   }
 
-  .navbar:hover .SetText, .navbar:hover .InfoText{
+  .navItem {
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.3s;
+  }
+
+  .navItem:hover span {
+    color: red;
+  }
+
+  .navItem span {
+    color: white;
+  }
+
+  .activeLink span {
     color: red;
     cursor: pointer;
-}
+    font-weight: bold;
+  }
 
-.Settings, .Info {
-    width: 80px;
-    height: 80px;
+.Settings, .Home, .Info {
+    /* width: 140px;
+    height: 140px; */
     /* position: absolute; */
-    top: 40px;
+    /* top: 10px; */
     filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
 }
 
 /* remove .Settings and .Info later when I add my ButtonSound */
 .Settings {
+    width: 150px;
+    height: 150px;
     position: absolute;
-    left: 20px;
+    left: 170px;
+    top: 10px;
 }
 
+.Home {
+    width: 120px;
+    height: 120px;
+    position: absolute;
+    left: 798px;
+    top: 22px;
+}
 
-.SetText, .InfoText {
-    text-shadow: 2px 1px black;
+.Info {
+    width: 130px;
+    height: 125px;
+    position: absolute;
+    /* right: 160px; */
+    left: 1425px;
+    top: 20px;
+}
+
+.SetText, .HomeText, .InfoText {
+    font-size: 20px;
 }
 
 .SetText {
     position: absolute;
-    left: 25px;
-    top: 80px;
+    left: 205px;
+    top: 130px;
+}
+
+.HomeText {
+    position: absolute;
+    left: 825px;
+    top: 130px;
 }
 
 .InfoText {
     position: absolute;
-    right: 15px;
-    top: 70px;
+    right: 220px;
+    top: 130px;
 }
 
   
