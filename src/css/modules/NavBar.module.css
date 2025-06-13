@@ -1,67 +1,63 @@
-.navbar {
+.NavBar {
     display: flex;
-    justify-content: center;
-    gap: 30px;
-    padding-top: 10px;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 10%;
   }
 
-  .navItem {
-    text-align: center;
+  .NavItem {
+    display: flex;
+    position: relative;
+    align-items: center;
     text-decoration: none;
     color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    gap: 0.5rem;
     transition: color 0.3s;
   }
 
-  .navItem:hover span {
+  .NavItem:hover span {
     color: red;
   }
 
-  .navItem span {
+  .NavItem span {
     color: white;
   }
 
   .activeLink span {
     color: red;
     cursor: pointer;
-    font-weight: bo
+    font-weight: bold;
   }
 
+.ButtonClickSet, .ButtonClickHome, .ButtonClickInfo {
+  position: absolute;
+  align-items: center;
+  box-shadow: none !important;
+  background: none;
+  z-index: 1;
+}
+
 .Settings, .Home, .Info {
-    /* width: 140px;
-    height: 140px; */
-    /* position: absolute; */
-    /* top: 10px; */
+
     filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
 }
 
-/* remove .Settings and .Info later when I add my ButtonSound */
 .Settings {
-    width: 150px;
-    height: 150px;
-    position: absolute;
-    left: 170px;
-    top: 10px;
+  width: 160px;
+  height: 180px;
+  position: relative;
+  top: 4px;
 }
 
 .Home {
-    width: 120px;
-    height: 120px;
-    position: absolute;
-    left: 798px;
-    top: 22px;
+  width: 140px;
+  height: 140px;
 }
 
 .Info {
-    width: 130px;
-    height: 125px;
-    position: absolute;
-    /* right: 160px; */
-    left: 1425px;
-    top: 20px;
+  width: 150px;
+  height: 150px;
 }
 
 .SetText, .HomeText, .InfoText {
@@ -70,20 +66,20 @@
 
 .SetText {
     position: absolute;
-    left: 205px;
-    top: 130px;
+    left: 60px;
+    top: 150px;
 }
 
 .HomeText {
     position: absolute;
-    left: 825px;
+    left: 60px;
     top: 130px;
 }
 
 .InfoText {
     position: absolute;
-    right: 220px;
-    top: 130px;
+    right: 45px;
+    top: 140px;
 }
 
   
