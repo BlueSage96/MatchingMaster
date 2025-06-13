@@ -79,12 +79,23 @@ function Match() {
     setupDeck();
   },[gameMode]);
 
+  useEffect(() => {
+     const audio = new Audio(CardClick);
+     audio.preload = 'auto';
+     CardClickRef.current.load();
+  },[]);
+
   /*
      Matching algorithm
     */
   const handleFlippedCards = useCallback((index) => {
     if (lockedBoard || flippedCards.includes(index) || matchedCards.includes(index)) return;
    
+    if (cardSoundEnabled && CardClickRef.current) {
+       CardClickRef.currentTime = 0;
+       CardClickRef.current.play();
+    }
+
     const newFlipped = [...flippedCards, index];
     setFlippedCards(newFlipped);
 
@@ -101,7 +112,20 @@ function Match() {
           setLockedBoard(false);
       }, 1000);
     }
-  },[flippedCards, lockedBoard, gameDeck, matchedCards]);
+  },[flippedCards, lockedBoard, gameDeck, matchedCards, cardSoundEnabled]);
+
+  if (loading) {
+     return (
+        <>
+          <div className={MatchStyle.LoadingContainer}>
+              <div className={MatchStyle.Loading}><h2>Loading game cards...</h2></div>
+              <div className={MatchStyle.FetchingMode}>
+                <h3>{gameMode === "marvel" ? "Fetching Marvel characters..." : "Preparing color cards..."}</h3>
+              </div>
+          </div>
+        </>
+     )
+  }
 
   return (
     <div className={MatchStyle.MatchHeader}>
