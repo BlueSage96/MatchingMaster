@@ -1,97 +1,121 @@
-import { useState, useEffect } from 'react';
-import Card from '../shared/Card.jsx';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import Card from '../shared/Card';
+import MarvelFetch from '../API/MarvelAPIFetch';
+import MatchStyle from '../css/modules/Match.module.css';
+import CardClick from '../assets/CardFlip.mp3';
+import { useSound } from '../context/SoundProvider';
+import ButtonSound from '../shared/ButtonSound';
+
 function Match() {
-  const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange'];
-  const [cards, setCards] = useState([]);
+  const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange','black','pink','turquoise'];
+  const [loading, setLoading] = useState(true);
+  const [gameDeck, setGameDeck] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [lockedBoard, setLockedBoard] = useState(false); //briefly lock board after a match is made
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  /*use effect to duplicate base colors, shuffle cards on mount, & sets up the board 
-    use Math.random & sort (also filter when using Marvel API)
-    line 18: event listener
-    lines 19 & 20: cleanup function (including setCards) - don't change 0.5
-    line 21: dependency array *Don't add baseColors will cause error & color flickering
-    */
+  const location = useLocation();
+  const navigate = useNavigate();
+  const gameMode = location.state?.mode;
+
+  const { cardSoundEnabled } = useSound();
+  const CardClickRef = useRef(new Audio(CardClick));
+
+  // enhanced shuffling algorithm
+  function FisherYatesShuffle (array) {
+    const shuffled = array.slice();
+    for (let i = shuffled.length - 1; i > 0; i--){
+      const j = Math.floor((crypto.getRandomValues(new Uint32Array(1))[0]/2**32*(i+1)));
+      [shuffled[i],shuffled[j]] = [shuffled[j],shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  /* Fetch images from Marvel API - fall back to color if it can't fetch */
+  async function LoadCharacters() {
+     try {
+       setLoading(true);
+       console.log("Fetching Marvel characters");
+       const images = await MarvelFetch();
+       console.log("Marvel API response:", images);
+
+       if (!images || images.length < 9) {
+          throw new Error("Not enough character images returned");
+       }
+
+       const duplicates = [...images,...images];
+       const shuffled = FisherYatesShuffle(duplicates);
+       setGameDeck(shuffled);
+     } catch (error) {
+        console.log("Error loading characters: ", error);
+        console.log("Falling back to color mode due to API error");
+        const doubleColors = [...baseColors, ...baseColors];
+        const shuffled = FisherYatesShuffle(doubleColors);
+        setGameDeck(shuffled);
+     } finally {
+        setLoading(false);
+     }
+  }
+
+  // Shuffling according to game mode
   useEffect(() => {
-    const shuffleCards = [...baseColors, ...baseColors].sort(
-      () => 0.5 - Math.random()
-    );
-    setCards(shuffleCards);
-  }, []);
+    async function setupDeck() {
+      setLoading(true);
+      setMatchedCards([]);
+      setFlippedCards([]);
+
+      if (gameMode === 'marvel') {
+        await LoadCharacters();
+        console.log("Setting up character mode");
+      }
+      else {
+        const duplicated = [...baseColors, ...baseColors];
+        setGameDeck(FisherYatesShuffle(duplicated));
+        setLoading(false);
+      }
+    }
+    setupDeck();
+  },[gameMode]);
 
   /*
-     handleCardFlip(index)
-
-    Prevents flipping if:
-
-    The board is locked.
-    The card is already flipped or matched
-
-    Lines 52 & 53: Adds the clicked card index to setFlippedCards. 
-    Hint: need a variable that accepts flippedCards & the card index
-
-    If 2 cards are flipped:
-
-    Temporarily locks the board.
-    If they match: adds them to matchedCards.
-    In both cases, resets flippedCards after 1 second.
+     Matching algorithm
     */
-  function handleFlippedCards(index) {
-    //initializing
-    if (lockedBoard) return; //determine if board needs to be locked
-    if (flippedCards.includes(index) || matchedCards.includes(index)) return;
-
+  const handleFlippedCards = useCallback((index) => {
+    if (lockedBoard || flippedCards.includes(index) || matchedCards.includes(index)) return;
+   
     const newFlipped = [...flippedCards, index];
     setFlippedCards(newFlipped);
 
     if (newFlipped.length === 2) {
       setLockedBoard(true); //lock board for a sec when there's a match
-
-      //new variables for indicies that are compared to one another
       const [firstIndex, secondIndex] = newFlipped;
 
-      //compare the two cards for a match
-      if (cards[firstIndex] === cards[secondIndex]) {
-        //Match found
-        setMatchedCards([...matchedCards, firstIndex, secondIndex]);
-        //lock the board for a second
-        setTimeout(() => {
+      if (gameDeck[firstIndex] === gameDeck[secondIndex]) {
+        setMatchedCards(prev => [...prev, firstIndex, secondIndex]);
+      
+      } 
+      setTimeout(() => {
           setFlippedCards([]);
           setLockedBoard(false);
-        }, 1000);
-      } else {
-        //not matched
-        setTimeout(() => {
-          setFlippedCards([]);
-          setLockedBoard(false);
-        }, 1000);
-      }
+      }, 1000);
     }
-  }
+  },[flippedCards, lockedBoard, gameDeck, matchedCards]);
 
-  /*
-       Rendered Output:
-
-       A flexbox layout with cards.
-
-       Each card:
-
-       Gets its color.
-       Checks if it's currently flipped or matched.
-       Triggers handleCardFlip() when clicked.
-    
-    */
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px' }}>
-      {cards.map((color, index) => (
+    <div className={MatchStyle.MatchHeader}>
+      <div className={MatchStyle.Game}>
+            {gameDeck.map((item, index) => (
         <Card
           key={index}
-          color={cards[index]} // always pass color
-          flipped={flippedCards.includes(index) || matchedCards.includes(index)} // controls rotation
+          color={item} 
+          flipped={flippedCards.includes(index) || matchedCards.includes(index)} 
           onClick={() => handleFlippedCards(index)}
         />
       ))}
+      </div>
+  
     </div>
   );
 }

@@ -9,6 +9,7 @@ react-router
 prettier
 styled-components
 confetti
+crypto-js
 
 SETUP:
 -Clone the repo and use your own API keys to pull from the Marvel API. An example of API keys is provided in env.local.example
