@@ -1,0 +1,86 @@
+.NavBar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+  }
+
+  .NavItem {
+    display: flex;
+    position: relative;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    gap: 0.5rem;
+    transition: color 0.3s;
+  }
+
+  .NavItem:hover span {
+    color: red;
+  }
+
+  .NavItem span {
+    color: white;
+  }
+
+  .activeLink span {
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+.ButtonClickSet, .ButtonClickHome, .ButtonClickInfo {
+  position: relative;
+  align-items: center;
+  box-shadow: none !important;
+  background: none;
+  z-index: 1;
+  top: -40px;
+}
+
+.Settings, .Home, .Info {
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+}
+
+.Settings {
+  width: 125px;
+  height: 135px;
+  position: relative;
+  top: 5px;
+}
+
+.Home {
+  width: 105px;
+  height: 115px;
+  position: relative;
+  /* top: 3px; */
+}
+
+.Info {
+  width: 110px;
+  height: 115;
+  position: relative;
+  top: 2px;
+}
+
+.SetText, .HomeText, .InfoText {
+    font-size: 20px;
+}
+
+.SetText {
+    position: absolute;
+    left: 55px;
+    top: 135px;
+}
+
+.HomeText {
+    position: absolute;
+    left: 50px;
+    top: 125px;
+}
+
+.InfoText {
+    position: absolute;
+    right: 35px;
+    top: 125px;
+}
