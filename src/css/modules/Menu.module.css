@@ -4,7 +4,7 @@
     height: 480px;
     object-fit: contain;
     position: relative;
-    top: -75px;
+    top: -100px;
     box-shadow: none !important;
 }
 
@@ -37,7 +37,7 @@
   }
   
   .Color, .Marvel {
-    width: 175px;
+    width: 160px;
     height: 200px;
     display: block;
   }
@@ -56,12 +56,12 @@
     z-index: 1;
     cursor: pointer;
     box-shadow: none !important;
-    bottom: 50px;
+    bottom: 30px;
   }
 
   .Start {
-    width: 350px;
-    height: 175px;
+    width: 300px;
+    height: 150px;
     object-fit: contain;
     pointer-events: auto;
     user-select: none;

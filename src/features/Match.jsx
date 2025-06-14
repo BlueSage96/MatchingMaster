@@ -128,7 +128,11 @@ function Match() {
   }
 
   return (
-    <div className={MatchStyle.MatchHeader}>
+    <>
+      <Link to="/">
+          <ButtonSound className={MatchStyle.GameBackBtn}>&larr; Back</ButtonSound>
+      </Link>
+     <div className={MatchStyle.MatchHeader}>
       <div className={MatchStyle.Game}>
             {gameDeck.map((item, index) => (
         <Card
@@ -139,8 +143,8 @@ function Match() {
         />
       ))}
       </div>
-  
     </div>
+    </>
   );
 }
 export default Match;
