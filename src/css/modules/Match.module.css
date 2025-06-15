@@ -10,8 +10,8 @@
 .GameBackBtn {
     position: absolute;
     font-size: 24px;
-    left: 100px;
-    top: 200px;
+    left: 250px;
+    top: 250px;
 }
 
 .Game {
@@ -21,8 +21,8 @@
     padding: 16px;
     box-sizing: border-box;
     position: absolute;
-    top: 200px;
-    left: 500px;
+    top: 250px;
+    left: 550px;
     background: rgba(0,0,0,0.3);
     border: 2px solid black;
     border-radius: 18px;
