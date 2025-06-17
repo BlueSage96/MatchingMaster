@@ -20,7 +20,7 @@ function Settings() {
 
   return (
     <>
-      <BackgroundMusic bgSoundEnabled={bgSoundEnabled} bgSongRef={bgSongRef} />
+      <BackgroundMusic bgSoundEnabled={bgSoundEnabled} bgSongRef={bgSongRef}/>
       <ButtonSound className="backButton" onClick={() => navigate(-1)}>&larr; Back</ButtonSound>
       <h1>Settings</h1>
       <div className={SettingsStyle.Main}>

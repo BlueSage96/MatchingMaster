@@ -10,7 +10,6 @@ import ButtonSound from '../shared/ButtonSound';
 function Menu() {
     const navigate = useNavigate();
     const [selectMode, setSelectMode] = useState(null);
-    // const [hasMusicStarted, setHasMusicStarted] = useState(null);
 
     const handleSelectMode = (mode) => {
       setSelectMode(mode);
