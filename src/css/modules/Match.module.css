@@ -50,3 +50,24 @@
     position: relative;
     top: 200px;
 }
+
+.PlayerForm {
+    margin-top: 60px;
+    padding: 8px 16px;
+    border: 2px solid black;
+    border-radius: 18px;
+    background: rgba(0,0,0,0.3);
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+}
+
+.playerLabel {
+    color: white;
+    text-shadow: 1px 1px black;
+    font-size: 30px;
+}
+
+.StylePlayerInput {
+    padding: 4px 8px;
+    margin: 0 12px;
+    border-radius: 8px;
+}

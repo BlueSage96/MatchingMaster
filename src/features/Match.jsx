@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Card from '../shared/Card';
 import MarvelFetch from '../API/MarvelAPIFetch';
 import MatchStyle from '../css/modules/Match.module.css';
+import Endgame from '../features/Endgame';
 import CardClick from '../assets/CardFlip.mp3';
 import { useSound } from '../context/SoundProvider';
 import ButtonSound from '../shared/ButtonSound';
+
 
 function Match() {
   const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange','black','pink','turquoise'];
@@ -15,6 +17,10 @@ function Match() {
   const [flippedCards, setFlippedCards] = useState([]);
   const [lockedBoard, setLockedBoard] = useState(false); //briefly lock board after a match is made
   const [isGameOver, setIsGameOver] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [playerStats, setPlayerStats] = useState(null);
+  const [nameSubmitted, setNameSubmitted] = useState(false);
+  const [attempts, setAttempts] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -24,7 +30,7 @@ function Match() {
   const CardClickRef = useRef(new Audio(CardClick));
 
   // enhanced shuffling algorithm
-  function FisherYatesShuffle (array) {
+  function fisherYatesShuffle (array) {
     const shuffled = array.slice();
     for (let i = shuffled.length - 1; i > 0; i--){
       const j = Math.floor((crypto.getRandomValues(new Uint32Array(1))[0]/2**32*(i+1)));
@@ -34,7 +40,7 @@ function Match() {
   }
 
   /* Fetch images from Marvel API - fall back to color if it can't fetch */
-  async function LoadCharacters() {
+  async function loadCharacters() {
      try {
        setLoading(true);
        console.log("Fetching Marvel characters");
@@ -46,13 +52,13 @@ function Match() {
        }
 
        const duplicates = [...images,...images];
-       const shuffled = FisherYatesShuffle(duplicates);
+       const shuffled = fisherYatesShuffle(duplicates);
        setGameDeck(shuffled);
      } catch (error) {
         console.log("Error loading characters: ", error);
         console.log("Falling back to color mode due to API error");
         const doubleColors = [...baseColors, ...baseColors];
-        const shuffled = FisherYatesShuffle(doubleColors);
+        const shuffled = fisherYatesShuffle(doubleColors);
         setGameDeck(shuffled);
      } finally {
         setLoading(false);
@@ -67,12 +73,12 @@ function Match() {
       setFlippedCards([]);
 
       if (gameMode === 'marvel') {
-        await LoadCharacters();
+        await loadCharacters();
         console.log("Setting up character mode");
       }
       else {
         const duplicated = [...baseColors, ...baseColors];
-        setGameDeck(FisherYatesShuffle(duplicated));
+        setGameDeck(fisherYatesShuffle(duplicated));
         setLoading(false);
       }
     }
@@ -101,6 +107,7 @@ function Match() {
 
     if (newFlipped.length === 2) {
       setLockedBoard(true); //lock board for a sec when there's a match
+      setAttempts((prev) => prev + 1);
       const [firstIndex, secondIndex] = newFlipped;
 
       if (gameDeck[firstIndex] === gameDeck[secondIndex]) {
@@ -113,6 +120,26 @@ function Match() {
       }, 1000);
     }
   },[flippedCards, lockedBoard, gameDeck, matchedCards, cardSoundEnabled]);
+
+
+  useEffect(() => {
+  if (matchedCards.length === gameDeck.length && gameDeck.length > 0 && !isGameOver) {
+       const numPairs = gameDeck.length / 2;
+       const baseScore = numPairs * 100;
+       const penalty = Math.max(0, (attempts - numPairs) * 10 )
+       const stats = {
+          player: playerName,
+          score: Math.max(0, baseScore - penalty),
+          attempts,
+       };
+       setPlayerStats(stats);      
+
+         setTimeout(() => {
+            setIsGameOver(true);
+        },1000);
+      
+    }
+  },[matchedCards, gameDeck, isGameOver, playerName]);
 
   if (loading) {
      return (
@@ -127,12 +154,35 @@ function Match() {
      )
   }
 
+    if (isGameOver && !nameSubmitted) {
+      return (
+         <form
+          className={MatchStyle.PlayerForm}
+          onSubmit={(event) => {
+              event.preventDefault();
+              const fullStats = { ...playerStats, player: playerName };
+              localStorage.setItem('matchStats', JSON.stringify(fullStats));
+              setNameSubmitted(true);
+              navigate("/gameOver", {state: fullStats});
+          }}
+          >
+            <label className={MatchStyle.playerLabel} htmlFor="playerName">Enter your name to see your score: </label>
+            <input 
+              className={MatchStyle.StylePlayerInput}
+              type="text"
+              value={playerName}
+              onChange={(event) => setPlayerName(event.target.value)}
+              required />
+
+            <ButtonSound style={{padding: "12px 16px"}} type="submit">Submit</ButtonSound>
+          </form>
+      )
+  }
+
   return (
     <>
-      <Link to="/">
-          <ButtonSound className={MatchStyle.GameBackBtn}>&larr; Back</ButtonSound>
-      </Link>
-     <div className={MatchStyle.MatchHeader}>
+     <ButtonSound className={MatchStyle.GameBackBtn} onClick={() => navigate(-1)}>&larr; Back</ButtonSound>
+        <div className={MatchStyle.MatchHeader}>
       <div className={MatchStyle.Game}>
             {gameDeck.map((item, index) => (
         <Card
@@ -144,6 +194,7 @@ function Match() {
       ))}
       </div>
     </div>
+
     </>
   );
 }
