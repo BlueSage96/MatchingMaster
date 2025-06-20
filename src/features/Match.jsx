@@ -9,15 +9,14 @@ import { useSound } from '../context/SoundProvider';
 import ButtonSound from '../shared/ButtonSound';
 
 
-function Match() {
+function Match({playerName, setPlayerName}) {
   const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange','black','pink','turquoise'];
   const [loading, setLoading] = useState(true);
   const [gameDeck, setGameDeck] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
-  const [lockedBoard, setLockedBoard] = useState(false); //briefly lock board after a match is made
+  const [lockedBoard, setLockedBoard] = useState(false); 
   const [isGameOver, setIsGameOver] = useState(false);
-  const [playerName, setPlayerName] = useState('');
   const [playerStats, setPlayerStats] = useState(null);
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -161,7 +160,9 @@ function Match() {
           onSubmit={(event) => {
               event.preventDefault();
               const fullStats = { ...playerStats, player: playerName };
-              localStorage.setItem('matchStats', JSON.stringify(fullStats));
+              const storedData = JSON.parse(localStorage.getItem('matchStats')) || [];
+              storedData.push(fullStats);
+              localStorage.setItem('matchStats', JSON.stringify(storedData));
               setNameSubmitted(true);
               navigate("/gameOver", {state: fullStats});
           }}
