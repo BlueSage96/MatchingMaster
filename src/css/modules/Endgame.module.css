@@ -1,0 +1,57 @@
+.leaderboard {
+    display: grid;
+    gap: 8px;
+    padding: 6px;
+    box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 18px;
+    background: rgba(0,0,0,0.3);
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+    margin-bottom: 40px;
+}
+
+.statsInfo {
+    display: flex;
+    padding: 2px 8px;
+    font-size: 20px;
+}
+
+.Btn {
+    padding: 6px 6px;
+    margin: 2px 4px;
+    font-size: 22px;
+}
+
+.EditBtnWrapper {
+    padding: 2px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; 
+    height: 22px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+
+.EditBtn {
+    width: 32px;
+    height: 32px;
+    box-shadow: none !important;
+}
+
+.SortByScore {
+    background: black;
+    border: 1px 1px gray;
+    border-radius: 8px;
+    padding: 4px;
+    text-shadow: 1px 1px gray;
+    font-size: 16px;
+}
+
+.SortByScore:hover {
+    background: red;
+}
