@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Card from '../shared/Card';
 import MarvelFetch from '../API/MarvelAPIFetch';
 import MatchStyle from '../css/modules/Match.module.css';
-import Endgame from '../features/Endgame';
 import CardClick from '../assets/CardFlip.mp3';
 import { useSound } from '../context/SoundProvider';
 import ButtonSound from '../shared/ButtonSound';

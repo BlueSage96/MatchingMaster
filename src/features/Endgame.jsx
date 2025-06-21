@@ -11,6 +11,7 @@ function Endgame({playerName}) {
   const [editedName, setEditedName] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
   const [history, setHistory] = useState(playerHistory);
+  const [sortScore, setSortScore] = useState('');
 
   const handleGameSelect = (option) => {
      if (option === "Play Again") {
@@ -20,6 +21,22 @@ function Endgame({playerName}) {
         navigate("/");
      }
   }
+
+  const sortByScore = (order) => {
+    if (order === "HighScore") {
+      const sortedScores = [...history].sort((a,b) => b.score - a.score);
+      setHistory(sortedScores);
+   }
+   else if (order === "LowScore") {
+      const sortedScores = [...history].sort((a ,b) => a.score - b.score);
+      setHistory(sortedScores);
+   }
+   else {
+      const originalSort = JSON.parse(localStorage.getItem('matchStats')) || [];
+      setHistory(originalSort);
+   }
+   setSortScore(order);
+ };
 
   useEffect(() => {
      confetti();
@@ -31,7 +48,7 @@ function Endgame({playerName}) {
       <h1>Game Over!</h1>
       <div className={EndgameStyle.leaderboard}>
         <div className={EndgameStyle.statsInfo}>
-          <h2 style={{marginRight: '20px', textDecoration: 'underline'}}>Player Stats</h2>
+          <h2 style={{fontSize: 28, marginLeft: '4px', textDecoration: 'underline'}}>Player Stats</h2>
         </div>
 
         <div className={EndgameStyle.statsInfo}>
@@ -46,7 +63,7 @@ function Endgame({playerName}) {
                         <>
                           <input type="text" value={editedName} onChange={(event) => setEditedName(event.target.value)}
                           style={{marginRight: 0}} />
-                            <ButtonSound className={Endgame.Btn} onClick={() => {
+                            <ButtonSound className={EndgameStyle.Btn} onClick={() => {
                                const updated = [...history];
                                updated[idx] = {
                                   ...updated[idx],
@@ -67,7 +84,7 @@ function Endgame({playerName}) {
                             }}>
                               <img className={EndgameStyle.EditBtn} src={Edit} alt="Edit icon"/>
                             </ButtonSound>
-                            <span style={{marginRight: 40}}>{player}: </span>
+                            <span style={{ width: 50, display: "inline-block", textAlign: "right", marginRight: 40}}>{player}: </span>
                             <span>{score}</span>
                          </>
                       )}
@@ -77,8 +94,17 @@ function Endgame({playerName}) {
             })}
           </div>
         </div>
+         <div>
+            <label htmlFor="sortByScore" style={{textShadow: "1px 1px black", fontSize: 18, padding: "2px 6px"}}>Sort By Score:</label>
+            <select className={EndgameStyle.SortByScore} value={sortScore}
+               onChange={(event) => sortByScore(event.target.value)}>
+               <option value="default"></option>
+               <option value="HighScore">High</option>
+               <option value="LowScore">Low</option>
+            </select>
+        </div>
       </div>
-
+     
       <div>
          <ButtonSound onClick={() => handleGameSelect("Play Again")}
             style={{marginRight: 40}}

@@ -13,11 +13,13 @@
 .statsInfo {
     display: flex;
     padding: 2px 8px;
+    font-size: 20px;
 }
 
 .Btn {
-    padding: 2px 4px;
-    /* font-size: 22px; */
+    padding: 6px 6px;
+    margin: 2px 4px;
+    font-size: 22px;
 }
 
 .EditBtnWrapper {
@@ -39,4 +41,17 @@
     width: 32px;
     height: 32px;
     box-shadow: none !important;
+}
+
+.SortByScore {
+    background: black;
+    border: 1px 1px gray;
+    border-radius: 8px;
+    padding: 4px;
+    text-shadow: 1px 1px gray;
+    font-size: 16px;
+}
+
+.SortByScore:hover {
+    background: red;
 }
