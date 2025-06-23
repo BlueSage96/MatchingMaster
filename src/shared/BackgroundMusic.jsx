@@ -14,6 +14,18 @@ export default function BackgroundMusic ({bgSoundEnabled, bgSongRef}) {
           audioRef.current = audio;
           if (bgSongRef) bgSongRef.current = audioRef.current;
        }
+
+       if (bgSoundEnabled && audioRef.current) {
+            audioRef.current.play();
+       } else if (audioRef.current) {
+          audioRef.current.pause();
+       }
+
+       return () => {
+         if (audioRef.current) {
+            audioRef.current.pause();
+         }
+       };
     },[bgSoundEnabled, bgSongRef]);
     
     return null;

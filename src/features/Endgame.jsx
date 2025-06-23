@@ -41,6 +41,9 @@ function Endgame({playerName}) {
   useEffect(() => {
      confetti();
      setEditedName(playerName);
+     return () => {
+
+     };
   },[playerName]);
 
   return (
@@ -64,11 +67,9 @@ function Endgame({playerName}) {
                           <input type="text" value={editedName} onChange={(event) => setEditedName(event.target.value)}
                           style={{marginRight: 0}} />
                             <ButtonSound className={EndgameStyle.Btn} onClick={() => {
-                               const updated = [...history];
-                               updated[idx] = {
-                                  ...updated[idx],
-                                  player: editedName,
-                               };
+                               const updated = history.map((item, i) =>
+                                 i === idx? { ...item, player: editedName } : item
+                              );
                                setHistory(updated);
                                localStorage.setItem('matchStats', JSON.stringify(updated));
                                setEditingIndex(null);
