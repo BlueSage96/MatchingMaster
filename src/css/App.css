@@ -20,7 +20,7 @@ html, body, #root {
 }
 
 .contentBox {
-  width: 1600px; /* Adjust to match your background image */
+  width: 1600px;
   height: 975px;
   background-size: cover;
   background-repeat: no-repeat;

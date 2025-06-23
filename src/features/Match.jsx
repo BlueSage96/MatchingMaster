@@ -106,9 +106,7 @@ function Match({playerName, setPlayerName}) {
     };
   }, []);
 
-  /*
-     Matching algorithm
-    */
+
   const handleFlippedCards = useCallback(
     (index) => {
       if (
@@ -127,7 +125,7 @@ function Match({playerName, setPlayerName}) {
       setFlippedCards(newFlipped);
 
       if (newFlipped.length === 2) {
-        setLockedBoard(true); //lock board for a sec when there's a match
+        setLockedBoard(true); 
         setAttempts((prev) => prev + 1);
         const [firstIndex, secondIndex] = newFlipped;
 
