@@ -9,7 +9,7 @@ import ButtonSound from '../shared/ButtonSound';
 
 
 function Match({playerName, setPlayerName}) {
-  const baseColors = ['blue','red','green','purple','yellow','orange','black','pink','turquoise',];
+  const baseColors = ['blue','red','green','purple','yellow','orange','black','pink','turquoise'];
   const [loading, setLoading] = useState(true);
   const [gameDeck, setGameDeck] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -72,15 +72,15 @@ function Match({playerName, setPlayerName}) {
 
       if (gameMode === 'marvel') {
         await loadCharacters();
-        console.log("Setting up character mode");
-      }
-      else {
+        console.log('Setting up character mode');
+      } else {
         const duplicated = [...baseColors, ...baseColors];
         setGameDeck(fisherYatesShuffle(duplicated));
         setLoading(false);
       }
     }
     setupDeck();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[gameMode]);
 
   useEffect(() => {
@@ -137,7 +137,7 @@ function Match({playerName, setPlayerName}) {
         },1000);
       
     }
-  },[matchedCards, gameDeck, isGameOver, playerName]);
+  },[matchedCards, gameDeck, isGameOver, playerName, attempts]);
 
   if (loading) {
      return (

@@ -75,10 +75,20 @@
   border-radius: 8px;
 }
 
+/* dynamic grid sizing for number of cards */
 @media (max-width: 1024px) {
   .Game {
     grid-template-columns: repeat(4, 1fr);
     max-width: 640px;
+  }
+
+  .Game > :nth-child(n+17) {
+    display: none;
+  }
+
+  .GameBackBtn {
+    font-size: 20px;
+    right: 350px;
   }
 }
 
@@ -86,11 +96,16 @@
   .Game {
     grid-template-columns: repeat(2, 1fr);
     max-width: 320px;
+    margin-left: 15px;
+  }
+
+  .Game > :nth-child(n+9) {
+    display: none;
   }
 
   .GameBackBtn {
-    font-size: 20px;
+    font-size: 16px;
     padding: 6px 12px;
-    margin-left: 10px;
+    right: 175px;
   }
 }
