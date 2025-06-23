@@ -58,10 +58,3 @@ span {
    background-color: red;
    cursor: pointer;
 }
-
-.backButton { 
-  position: absolute;
-  font-size: 25px;
-  left: 200px; 
-  top: 250px;
-}

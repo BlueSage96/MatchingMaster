@@ -1,73 +1,96 @@
 .MatchHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 88%;
-    padding: 0 10px;
-    margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 88%;
+  padding: 0 10px;
+  margin-bottom: 18px;
 }
 
 .GameBackBtn {
-    position: absolute;
-    font-size: 24px;
-    left: 250px;
-    top: 250px;
+  position: relative;
+  font-size: 24px;
+  right: 500px;
+  top: 12px;
 }
 
 .Game {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-    padding: 16px;
-    box-sizing: border-box;
-    position: absolute;
-    top: 250px;
-    left: 550px;
-    background: rgba(0,0,0,0.3);
-    border: 2px solid black;
-    border-radius: 18px;
-    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+  position: absolute;
+  top: 250px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid black;
+  border-radius: 18px;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6));
 }
 
+
+
 .LoadContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
 }
 
 .Loading {
-   font-size: 30px;
-   position: relative;
-   right: 5px;
-   top: 200px;
+  font-size: 30px;
+  position: relative;
+  right: 5px;
+  top: 200px;
 }
 
 .FetchingMode {
-    font-size: 20px;
-    color: #665;
-    position: relative;
-    top: 200px;
+  font-size: 20px;
+  color: #665;
+  position: relative;
+  top: 200px;
 }
 
 .PlayerForm {
-    margin-top: 60px;
-    padding: 8px 16px;
-    border: 2px solid black;
-    border-radius: 18px;
-    background: rgba(0,0,0,0.3);
-    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+  margin-top: 60px;
+  padding: 8px 16px;
+  border: 2px solid black;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6));
 }
 
 .playerLabel {
-    color: white;
-    text-shadow: 1px 1px black;
-    font-size: 30px;
+  color: white;
+  text-shadow: 1px 1px black;
+  font-size: 30px;
 }
 
 .StylePlayerInput {
-    padding: 4px 8px;
-    margin: 0 12px;
-    border-radius: 8px;
+  padding: 4px 8px;
+  margin: 0 12px;
+  border-radius: 8px;
+}
+
+@media (max-width: 1024px) {
+  .Game {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 640px;
+  }
+}
+
+@media (max-width: 600px) {
+  .Game {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 320px;
+  }
+
+  .GameBackBtn {
+    font-size: 20px;
+    padding: 6px 12px;
+    margin-left: 10px;
+  }
 }

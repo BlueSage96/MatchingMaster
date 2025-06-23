@@ -30,3 +30,57 @@
     padding: 20px 20px;
     margin: 4px 2px;
 }
+
+.backButton { 
+    position: absolute;
+    font-size: 24px;
+    left: 400px; 
+    top: 255px;
+  }
+
+@media only screen and (max-width: 1800px) {
+    .backButton {
+        left: 250px;
+    }
+}  
+
+@media only screen and (max-width: 1400px) {
+    .Main {
+        width: 60%;
+    }
+    .backButton {
+        left: 100px;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .backButton {
+        left: 50px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .backButton {
+        left: 30px;
+        font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .backButton {
+        font-size: 16px;
+        left: 20px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .backButton {
+        left: 10px;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .backButton {
+        top: 265px;
+    }
+}

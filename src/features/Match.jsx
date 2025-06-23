@@ -9,7 +9,7 @@ import ButtonSound from '../shared/ButtonSound';
 
 
 function Match({playerName, setPlayerName}) {
-  const baseColors = ['blue', 'red'];
+  const baseColors = ['blue','red','green','purple','yellow','orange','black','pink','turquoise',];
   const [loading, setLoading] = useState(true);
   const [gameDeck, setGameDeck] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);

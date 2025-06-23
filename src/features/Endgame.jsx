@@ -94,9 +94,9 @@ function Endgame({playerName}) {
             })}
           </div>
         </div>
-         <div>
+         <div style={{padding: 4}}>
             <label htmlFor="sortByScore" style={{textShadow: "1px 1px black", fontSize: 18, padding: "2px 6px"}}>Sort By Score:</label>
-            <select className={EndgameStyle.SortByScore} value={sortScore}
+            <select id="sortByScore" name="sortByScore" className={EndgameStyle.SortByScore} value={sortScore}
                onChange={(event) => sortByScore(event.target.value)}>
                <option value="default"></option>
                <option value="HighScore">High</option>
