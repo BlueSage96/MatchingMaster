@@ -14,11 +14,11 @@ function Instructions () {
         <h1 style={{ position: 'absolute', top: '235px', margin: "4px 8px" }}>Instructions</h1>
 
         <div className={InstStyle.panel}> 
-          <h2>
+          <p>
             Choose a matching mode such as color or Marvel characters. Match all
             card pairs to win the game. Use settings to toggle background music as well
             as button and card clicking sounds.
-          </h2>
+          </p>
           <img className={InstStyle.GIF} src={GIF} alt="Matching Master gif" />
         </div>
       

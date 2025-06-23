@@ -211,7 +211,7 @@ function Match({playerName, setPlayerName}) {
           required
         />
 
-        <ButtonSound style={{ padding: '12px 16px' }} type="submit">
+        <ButtonSound style={{ padding: '12px 16px', fontSize: "22px" }} type="submit">
           Submit
         </ButtonSound>
       </form>
