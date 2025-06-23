@@ -51,7 +51,7 @@ function Endgame({playerName}) {
       <h1>Game Over!</h1>
       <div className={EndgameStyle.leaderboard}>
         <div className={EndgameStyle.statsInfo}>
-          <h2 style={{fontSize: 28, marginLeft: '4px', textDecoration: 'underline'}}>Player Stats</h2>
+          <p style={{fontSize: 28, marginLeft: '4px', textDecoration: 'underline'}}>Player Stats</p>
         </div>
 
         <div className={EndgameStyle.statsInfo}>
