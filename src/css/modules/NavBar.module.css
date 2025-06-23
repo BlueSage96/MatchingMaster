@@ -51,9 +51,9 @@
 
 .Home {
   width: 105px;
-  height: 115px;
+  height: 112px;
   position: relative;
-  /* top: 3px; */
+  top: 3px;
 }
 
 .Info {
@@ -76,11 +76,33 @@
 .HomeText {
     position: absolute;
     left: 50px;
-    top: 125px;
+    top: 128px;
 }
 
 .InfoText {
     position: absolute;
     right: 35px;
     top: 125px;
+}
+
+@media (max-width: 600px) {
+    .SetText, .HomeText, .InfoText {
+        font-size: 18px;
+    }
+
+    .Home {
+      right: 4px;
+    }
+
+    .HomeText {
+       left: 50px;
+    }
+
+    .Info {
+      right: 10px;
+    }
+
+    .InfoText {
+      right: 45px;
+    }
 }

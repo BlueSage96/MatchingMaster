@@ -4,10 +4,8 @@ import '../css/Card.css';
 */
 function Card({ onClick, color, flipped }) {
   return (
-    //set template card here
     <>
       <div className="card-container" onClick={onClick}>
-        {/* Flipped used to determine if card has been flipped */}
         <div className={`card-inner ${flipped ? 'flipped' : ''}`}>
           <div className="card-front" style={
             flipped ? color.startsWith("http") ? {

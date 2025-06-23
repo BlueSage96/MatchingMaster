@@ -24,7 +24,7 @@ export default function ButtonSound({
     <button
       onClick={handleClick}
       {...props}
-      className={`buttonSound ${className}`} // Fixed space in concatenation
+      className={`buttonSound ${className}`}
       style={
         invisible
           ? {

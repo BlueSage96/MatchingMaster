@@ -1,0 +1,105 @@
+.panel {
+    position: relative;
+    top: 120px;
+    background: rgba(0,0,0,0.3);
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 4px 8px; 
+    font-size: 26px;
+}
+
+.backButton { 
+    position: absolute;
+    font-size: 24px;
+    left: 400px; 
+    top: 255px;
+  }
+
+@media only screen and (max-width: 1800px) {
+    .backButton {
+        left: 250px;
+    }
+}  
+
+@media only screen and (max-width: 1400px) {
+    .backButton {
+        left: 100px;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .backButton {
+        left: 50px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .backButton {
+        left: 30px;
+        font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 850px) {
+    .backButton {
+        font-size: 16px;
+        left: 20px;
+    }
+
+    .panel {
+        font-size: 12px;
+        padding: 2px 2px;
+    }
+}
+
+@media only screen and (max-width: 825px) {  
+    .GIF {
+        width: 75%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .backButton {
+        left: 10px;
+        top: 245px;
+    }
+
+    .panel {
+        width: 95%;
+    }
+    
+    .GIF {
+        width: 95%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .backButton {
+        top: 250px;
+        font-size: 15px;
+    }
+
+    .panel {
+        width: 90%;
+    }
+}
+
+@media only screen and (max-width: 475px) {
+    .backButton {
+        font-size: 12px;
+    }
+
+    .panel {
+        width: 85%;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .backButton {
+        font-size: 10px;
+    }
+
+    .panel {
+        width: 80%;
+    }
+}

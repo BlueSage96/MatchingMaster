@@ -20,7 +20,7 @@ html, body, #root {
 }
 
 .contentBox {
-  width: 1600px; /* Adjust to match your background image */
+  width: 1600px;
   height: 975px;
   background-size: cover;
   background-repeat: no-repeat;
@@ -57,11 +57,4 @@ span {
 .buttonSound:hover {
    background-color: red;
    cursor: pointer;
-}
-
-.backButton { 
-  position: absolute;
-  font-size: 25px;
-  left: 200px; 
-  top: 250px;
 }

@@ -1,7 +1,6 @@
 .card-container {
     width: 100px;
     height: 150px;
-    /* perspective: defines how far the object is away from the user.  */
     perspective: 1000px;
     margin: 10px;
 }

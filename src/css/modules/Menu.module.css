@@ -15,27 +15,23 @@
   }
   
   .ModeDiv {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 40px;
     width: 100%;
     position: absolute;
+    bottom: 250px;
   }
   
   .ColModeBtn, .MarModeBtn {
-    position: absolute;
+    position: static;
     display: block;
     z-index: 1;
     cursor: pointer;
-    bottom: -40px;
     box-shadow: none !important;
   }
 
-  .ColModeBtn {
-    left: 500px;
-  }
-
-  .MarModeBtn {
-    right: 500px;
-  }
-  
   .Color, .Marvel {
     width: 160px;
     height: 200px;
