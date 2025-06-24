@@ -30,10 +30,11 @@ function Match({playerName, setPlayerName}) {
   const gameMode =  modeFromState || modeFromStorage || 'color';
 
   useEffect(() => {
+    setPlayerName("");
     if (modeFromState) {
         localStorage.setItem('lastMode', modeFromState);
     }
-  },[modeFromState]);
+  },[setPlayerName,modeFromState]);
 
   // enhanced shuffling algorithm
   function fisherYatesShuffle(array) {
@@ -51,10 +52,7 @@ function Match({playerName, setPlayerName}) {
   async function loadCharacters() {
     try {
       setLoading(true);
-      console.log('Fetching Marvel characters');
       const images = await MarvelFetch();
-      console.log('Marvel API response:', images);
-
       if (!images || images.length < 9) {
         throw new Error('Not enough character images returned');
       }
@@ -63,11 +61,10 @@ function Match({playerName, setPlayerName}) {
       const shuffled = fisherYatesShuffle(duplicates);
       setGameDeck(shuffled);
     } catch (error) {
-      console.log('Error loading characters: ', error);
-      console.log('Falling back to color mode due to API error');
       const doubleColors = [...baseColors, ...baseColors];
       const shuffled = fisherYatesShuffle(doubleColors);
       setGameDeck(shuffled);
+      throw new Error('Error loading characters. Falling back to color mode due to API error: ', error);
     } finally {
       setLoading(false);
     }
@@ -82,7 +79,6 @@ function Match({playerName, setPlayerName}) {
 
       if (gameMode === 'marvel') {
         await loadCharacters();
-        console.log('Setting up character mode');
       } else {
         const duplicated = [...baseColors, ...baseColors];
         setGameDeck(fisherYatesShuffle(duplicated));
@@ -162,9 +158,7 @@ function Match({playerName, setPlayerName}) {
     }
   }, [matchedCards, gameDeck, isGameOver, playerName, attempts]);
 
-  useEffect(() => {
-    setPlayerName("");
-  },[]);
+
 
   if (loading) {
     return (

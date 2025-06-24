@@ -24,6 +24,7 @@ function Endgame({playerName}) {
 
   const handleGameSelect = (option) => {
      if (option === "Play Again") {
+         localStorage.setItem('lastMode', mode);
          navigate("/match", {state: {mode}});
      }
      if (option === "Main Menu") {
@@ -62,15 +63,22 @@ function Endgame({playerName}) {
   useEffect(() => {
      confetti();
      setEditedName(playerName);
-     if (totalPages > 0) {
+     return () => {};
+  },[playerName]);
+
+  useEffect(() => {
+   if (totalPages > 0) {
          if (currentPage < 1 || currentPage > totalPages) {
             navigate("/gameOver");
          }
      }
-     return () => {
+  },[currentPage, totalPages, navigate,]);
 
-     };
-  },[playerName, currentPage, totalPages, navigate]);
+  useEffect(() => {
+    if (location.state?.mode) {
+         localStorage.setItem('lastMode', location.state.mode);
+     }
+  },[location.state?.mode]);
 
   return (
     <>
@@ -125,14 +133,14 @@ function Endgame({playerName}) {
         </div>
          <div style={{padding: 4}}>
             <label htmlFor="sortByScore" style={{textShadow: "1px 1px black", fontSize: 18, padding: "2px 6px"}}>Sort By Score:</label>
-            <select id=
-            "sortByScore" name="sortByScore" className={EndgameStyle.SortByScore} value={sortScore}
+            <ButtonSound invisible style={{padding: 0}}>
+               <select id="sortByScore" name="sortByScore" className={EndgameStyle.SortByScore} value={sortScore}
                onChange={(event) => sortByScore(event.target.value)}>
                <option value="default"></option>
                <option value="HighScore">High</option>
                <option value="LowScore">Low</option>
             </select>
-
+            </ButtonSound>
           
         </div>
           <div className={EndgameStyle.paginationControls}>

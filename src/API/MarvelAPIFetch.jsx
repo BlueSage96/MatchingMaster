@@ -9,13 +9,11 @@ async function MarvelAPIFetch () {
         const privateKey = import.meta.env.VITE_MARVEL_PRIVATE_KEY;
         const hash = md5(ts + privateKey + publicKey).toString();
 
-        console.log("Marvel API keys present:", !!publicKey, !!privateKey);
         if (!publicKey || !privateKey) {
             throw new Error("Marvel API keys are missing in environment variables");
         }
 
         const url = `https://gateway.marvel.com/v1/public/characters?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
-        console.log('Fetching from URL', url);
         const response = await fetch(url);
 
         if (!response.ok){
@@ -47,9 +45,6 @@ async function MarvelAPIFetch () {
             );
         });
 
-        console.log(`Filtered ${characters.length - cleanCharImg.length} characters with missing images`);
-        console.log(`Remaining valid characters: ${cleanCharImg.length}`);
-
         if (cleanCharImg.length < 9) {
             throw new Error('Not enough valid character images found');
         }
@@ -57,8 +52,6 @@ async function MarvelAPIFetch () {
       const characterImages = cleanCharImg
             .slice(0, 9)
             .map((charImg) => `${charImg.thumbnail.path}.${charImg.thumbnail.extension}`);
-            
-        console.log("Successfully loaded 9 character images");
         return characterImages;
     }
 
