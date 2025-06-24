@@ -1,15 +1,24 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Card from '../shared/Card';
+import GameBoard from '../shared/GameBoard';
 import MarvelFetch from '../API/MarvelAPIFetch';
 import MatchStyle from '../css/modules/Match.module.css';
 import CardClick from '../assets/CardFlip.mp3';
 import { useSound } from '../context/SoundProvider';
 import ButtonSound from '../shared/ButtonSound';
 
-
-function Match({playerName, setPlayerName}) {
-  const baseColors = ['blue','red','green','purple','yellow','orange','black','pink','turquoise'];
+function Match({ playerName, setPlayerName }) {
+  const baseColors = [
+    'blue',
+    'red',
+    'green',
+    'purple',
+    'yellow',
+    'orange',
+    'black',
+    'pink',
+    'turquoise',
+  ];
   const [loading, setLoading] = useState(true);
   const [gameDeck, setGameDeck] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -27,14 +36,16 @@ function Match({playerName, setPlayerName}) {
 
   const modeFromState = location.state?.mode;
   const modeFromStorage = localStorage.getItem('lastMode');
-  const gameMode =  modeFromState || modeFromStorage || 'color';
+  const gameMode = modeFromState || modeFromStorage || 'color';
+  const [apiError, setApiError] = useState("");
 
   useEffect(() => {
-    setPlayerName("");
+    setPlayerName('');
     if (modeFromState) {
-        localStorage.setItem('lastMode', modeFromState);
+      localStorage.setItem('lastMode', modeFromState);
     }
-  },[setPlayerName,modeFromState]);
+    return () => {};
+  }, [setPlayerName, modeFromState]);
 
   // enhanced shuffling algorithm
   function fisherYatesShuffle(array) {
@@ -56,7 +67,6 @@ function Match({playerName, setPlayerName}) {
       if (!images || images.length < 9) {
         throw new Error('Not enough character images returned');
       }
-
       const duplicates = [...images, ...images];
       const shuffled = fisherYatesShuffle(duplicates);
       setGameDeck(shuffled);
@@ -64,7 +74,10 @@ function Match({playerName, setPlayerName}) {
       const doubleColors = [...baseColors, ...baseColors];
       const shuffled = fisherYatesShuffle(doubleColors);
       setGameDeck(shuffled);
-      throw new Error('Error loading characters. Falling back to color mode due to API error: ', error);
+      
+      console.error(
+        'Error loading characters. : ', error);
+      setApiError('Falling back to color mode due to API error');
     } finally {
       setLoading(false);
     }
@@ -86,6 +99,7 @@ function Match({playerName, setPlayerName}) {
       }
     }
     setupDeck();
+    return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameMode]);
 
@@ -99,7 +113,6 @@ function Match({playerName, setPlayerName}) {
       audio.src = '';
     };
   }, []);
-
 
   const handleFlippedCards = useCallback(
     (index) => {
@@ -119,7 +132,7 @@ function Match({playerName, setPlayerName}) {
       setFlippedCards(newFlipped);
 
       if (newFlipped.length === 2) {
-        setLockedBoard(true); 
+        setLockedBoard(true);
         setAttempts((prev) => prev + 1);
         const [firstIndex, secondIndex] = newFlipped;
 
@@ -137,10 +150,12 @@ function Match({playerName, setPlayerName}) {
 
   // No cleanup needed — no subscriptions or intervals set
   useEffect(() => {
+    let cancelled = false;
     if (
       matchedCards.length === gameDeck.length &&
       gameDeck.length > 0 &&
-      !isGameOver
+      !isGameOver &&
+      !cancelled
     ) {
       const numPairs = gameDeck.length / 2;
       const baseScore = numPairs * 100;
@@ -155,10 +170,11 @@ function Match({playerName, setPlayerName}) {
       setTimeout(() => {
         setIsGameOver(true);
       }, 1000);
+      return () => {
+        cancelled = true;
+      };
     }
   }, [matchedCards, gameDeck, isGameOver, playerName, attempts]);
-
-
 
   if (loading) {
     return (
@@ -191,7 +207,7 @@ function Match({playerName, setPlayerName}) {
           const updatedStats = [...storedData, fullStats];
           localStorage.setItem('matchStats', JSON.stringify(updatedStats));
           setNameSubmitted(true);
-          navigate('/gameOver', { state: {...fullStats, mode: gameMode }});
+          navigate('/gameOver', { state: { ...fullStats, mode: gameMode } });
         }}
       >
         <label className={MatchStyle.playerLabel} htmlFor="playerName">
@@ -205,7 +221,10 @@ function Match({playerName, setPlayerName}) {
           required
         />
 
-        <ButtonSound style={{ padding: '12px 16px', fontSize: "22px" }} type="submit">
+        <ButtonSound
+          style={{ padding: '12px 16px', fontSize: '22px' }}
+          type="submit"
+        >
           Submit
         </ButtonSound>
       </form>
@@ -224,20 +243,13 @@ function Match({playerName, setPlayerName}) {
       >
         &larr; Back
       </ButtonSound>
-      <div className={MatchStyle.MatchHeader}>
-        <div className={MatchStyle.Game}>
-          {gameDeck.map((item, index) => (
-            <Card
-              key={index}
-              color={item}
-              flipped={
-                flippedCards.includes(index) || matchedCards.includes(index)
-              }
-              onClick={() => handleFlippedCards(index)}
-            />
-          ))}
-        </div>
-      </div>
+      {apiError && <p style={{color: 'red'}}>{apiError}</p>}
+      <GameBoard
+        gameDeck={gameDeck}
+        flippedCards={flippedCards}
+        matchedCards={matchedCards}
+        handleFlippedCards={handleFlippedCards}
+      />
     </>
   );
 }

@@ -72,12 +72,14 @@ function Endgame({playerName}) {
             navigate("/gameOver");
          }
      }
-  },[currentPage, totalPages, navigate,]);
+     return () => {};
+  },[currentPage, totalPages, navigate]);
 
   useEffect(() => {
     if (location.state?.mode) {
          localStorage.setItem('lastMode', location.state.mode);
      }
+     return () => {};
   },[location.state?.mode]);
 
   return (

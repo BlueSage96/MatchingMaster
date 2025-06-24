@@ -1,0 +1,24 @@
+.MatchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 88%;
+  padding: 0 10px;
+  margin-bottom: 18px;
+}
+
+.Game {
+  position: absolute;
+  top: 250px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid black;
+  border-radius: 18px;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6));
+}
