@@ -9,17 +9,7 @@ import ButtonSound from '../shared/ButtonSound';
 
 
 function Match({playerName, setPlayerName}) {
-  const baseColors = [
-    'blue',
-    'red',
-    'green',
-    'purple',
-    'yellow',
-    'orange',
-    'black',
-    'pink',
-    'turquoise',
-  ];
+  const baseColors = ['blue','red','green','purple','yellow','orange','black','pink','turquoise'];
   const [loading, setLoading] = useState(true);
   const [gameDeck, setGameDeck] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -30,12 +20,20 @@ function Match({playerName, setPlayerName}) {
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const [attempts, setAttempts] = useState(0);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const gameMode = location.state?.mode;
-
   const { cardSoundEnabled } = useSound();
   const CardClickRef = useRef(new Audio(CardClick));
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const modeFromState = location.state?.mode;
+  const modeFromStorage = localStorage.getItem('lastMode');
+  const gameMode =  modeFromState || modeFromStorage || 'color';
+
+  useEffect(() => {
+    if (modeFromState) {
+        localStorage.setItem('lastMode', modeFromState);
+    }
+  },[modeFromState]);
 
   // enhanced shuffling algorithm
   function fisherYatesShuffle(array) {
@@ -173,14 +171,14 @@ function Match({playerName, setPlayerName}) {
       <>
         <div className={MatchStyle.LoadingContainer}>
           <div className={MatchStyle.Loading}>
-            <h2>Loading game cards...</h2>
+            <p>Loading game cards...</p>
           </div>
           <div className={MatchStyle.FetchingMode}>
-            <h3>
+            <p>
               {gameMode === 'marvel'
                 ? 'Fetching Marvel characters...'
                 : 'Preparing color cards...'}
-            </h3>
+            </p>
           </div>
         </div>
       </>
@@ -199,7 +197,7 @@ function Match({playerName, setPlayerName}) {
           const updatedStats = [...storedData, fullStats];
           localStorage.setItem('matchStats', JSON.stringify(updatedStats));
           setNameSubmitted(true);
-          navigate('/gameOver', { state: fullStats });
+          navigate('/gameOver', { state: {...fullStats, mode: gameMode }});
         }}
       >
         <label className={MatchStyle.playerLabel} htmlFor="playerName">

@@ -1,27 +1,30 @@
 import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import ButtonSound from '../shared/ButtonSound';
 import EndgameStyle from '../css/modules/Endgame.module.css';
 import Edit from '../assets/edit.png';
 
 function Endgame({playerName}) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const mode = location.state?.mode || localStorage.getItem('lastMode') || 'color';
   const playerHistory = JSON.parse(localStorage.getItem('matchStats')) || [];
 
   const [editedName, setEditedName] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
   const [history, setHistory] = useState(playerHistory);
   const [sortScore, setSortScore] = useState('');
+  
 
   const [searchParams, setSearchParams] = useSearchParams();
   const itemsPerPage = 5;
   const currentPage = parseInt(searchParams.get('page') || '1',10);
-  const totalPages = Math.ceil((history.length)/itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil((history.length)/itemsPerPage));
 
   const handleGameSelect = (option) => {
      if (option === "Play Again") {
-         navigate("/match");
+         navigate("/match", {state: {mode}});
      }
      if (option === "Main Menu") {
         navigate("/");
