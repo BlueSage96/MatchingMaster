@@ -164,6 +164,10 @@ function Match({playerName, setPlayerName}) {
     }
   }, [matchedCards, gameDeck, isGameOver, playerName, attempts]);
 
+  useEffect(() => {
+    setPlayerName("");
+  },[]);
+
   if (loading) {
     return (
       <>
@@ -214,6 +218,10 @@ function Match({playerName, setPlayerName}) {
         </ButtonSound>
       </form>
     );
+  }
+
+  if (isGameOver && nameSubmitted) {
+    return null;
   }
 
   return (
