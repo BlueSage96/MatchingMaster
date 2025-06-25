@@ -216,6 +216,7 @@ function Match({ playerName, setPlayerName }) {
         <input
           className={MatchStyle.StylePlayerInput}
           type="text"
+          id="playerName"
           value={playerName}
           onChange={(event) => setPlayerName(event.target.value)}
           required
