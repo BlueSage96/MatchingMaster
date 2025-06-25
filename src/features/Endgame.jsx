@@ -1,21 +1,31 @@
 import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import ButtonSound from '../shared/ButtonSound';
 import EndgameStyle from '../css/modules/Endgame.module.css';
 import Edit from '../assets/edit.png';
 
 function Endgame({playerName}) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const mode = location.state?.mode || localStorage.getItem('lastMode') || 'color';
   const playerHistory = JSON.parse(localStorage.getItem('matchStats')) || [];
+
   const [editedName, setEditedName] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
   const [history, setHistory] = useState(playerHistory);
   const [sortScore, setSortScore] = useState('');
+  
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const itemsPerPage = 5;
+  const currentPage = parseInt(searchParams.get('page') || '1',10);
+  const totalPages = Math.max(1, Math.ceil((history.length)/itemsPerPage));
 
   const handleGameSelect = (option) => {
      if (option === "Play Again") {
-        navigate("/match");
+         localStorage.setItem('lastMode', mode);
+         navigate("/match", {state: {mode}});
      }
      if (option === "Main Menu") {
         navigate("/");
@@ -38,25 +48,65 @@ function Endgame({playerName}) {
    setSortScore(order);
  };
 
+ const handlePreviousPage = (page) => {
+   if (page > 1) {
+      setSearchParams({page: currentPage - 1});
+   }
+ }
+ 
+ const handleNextPage = (page) => {
+   if (page < totalPages) {
+      setSearchParams({page: currentPage + 1});
+   }
+ }
+
+ const handleDelete = (relativeIndex) => {
+   const absoluteIndex = (currentPage - 1) * itemsPerPage + relativeIndex;
+   const updated = history.filter((_, i) => i !== absoluteIndex);
+   setHistory(updated);
+   localStorage.setItem('matchStats', JSON.stringify(updated));
+   const newTotalPages = Math.max(1, Math.ceil(updated.length / itemsPerPage));
+   if (currentPage > newTotalPages) {
+     setSearchParams({ page: newTotalPages });
+   }
+ };
+ 
+
   useEffect(() => {
      confetti();
      setEditedName(playerName);
-     return () => {
-
-     };
+     return () => {};
   },[playerName]);
+
+  useEffect(() => {
+   if (totalPages > 0) {
+         if (currentPage < 1 || currentPage > totalPages) {
+            navigate("/gameOver");
+         }
+     }
+     return () => {};
+  },[currentPage, totalPages, navigate]);
+
+  useEffect(() => {
+    if (location.state?.mode) {
+         localStorage.setItem('lastMode', location.state.mode);
+     }
+     return () => {};
+  },[location.state?.mode]);
 
   return (
     <>
       <h1>Game Over!</h1>
       <div className={EndgameStyle.leaderboard}>
         <div className={EndgameStyle.statsInfo}>
-          <p style={{fontSize: 28, marginLeft: '4px', textDecoration: 'underline'}}>Player Stats</p>
+          <h2 style={{fontSize: 28, textDecoration: 'underline'}}>Player Stats</h2>
         </div>
 
         <div className={EndgameStyle.statsInfo}>
           <div>
-            {history.map((entry, idx) => {
+            {history
+            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+            .map((entry, idx) => {
                //Fallback to empty string/zero if missing
                const player = entry?.player ?? '';
                const score = entry?.score ?? 0;
@@ -75,6 +125,7 @@ function Endgame({playerName}) {
                                setEditingIndex(null);
                             }} >Update</ButtonSound>
                             <ButtonSound className={EndgameStyle.Btn} onClick={() => setEditingIndex(null)}>Cancel</ButtonSound>
+                            <ButtonSound className={EndgameStyle.Btn} onClick={() => handleDelete(idx)}>Delete</ButtonSound>
                         </>
                       ): (
                          <>
@@ -85,7 +136,7 @@ function Endgame({playerName}) {
                             }}>
                               <img className={EndgameStyle.EditBtn} src={Edit} alt="Edit icon"/>
                             </ButtonSound>
-                            <span style={{ width: 50, display: "inline-block", textAlign: "right", marginRight: 40}}>{player}: </span>
+                            <span style={{ width: 30, display: "inline-block", textAlign: "center", marginRight: 120}}>{player}:&nbsp;</span>
                             <span>{score}</span>
                          </>
                       )}
@@ -97,13 +148,21 @@ function Endgame({playerName}) {
         </div>
          <div style={{padding: 4}}>
             <label htmlFor="sortByScore" style={{textShadow: "1px 1px black", fontSize: 18, padding: "2px 6px"}}>Sort By Score:</label>
-            <select id="sortByScore" name="sortByScore" className={EndgameStyle.SortByScore} value={sortScore}
+            <ButtonSound invisible style={{padding: 0}}>
+               <select id="sortByScore" name="sortByScore" className={EndgameStyle.SortByScore} value={sortScore}
                onChange={(event) => sortByScore(event.target.value)}>
                <option value="default"></option>
                <option value="HighScore">High</option>
                <option value="LowScore">Low</option>
             </select>
+            </ButtonSound>
+          
         </div>
+          <div className={EndgameStyle.paginationControls}>
+               <ButtonSound className={EndgameStyle.prevBtn} onClick={() => handlePreviousPage(currentPage)} disabled={currentPage === 1}>Previous</ButtonSound>
+               <span className={EndgameStyle.pageSpan}>Page {currentPage} of {totalPages}</span>
+               <ButtonSound className={EndgameStyle.nextBtn} onClick={() => handleNextPage(currentPage)} disabled={currentPage === totalPages}>Next</ButtonSound>
+            </div>
       </div>
      
       <div>
