@@ -15,7 +15,7 @@ function Endgame({playerName}) {
   const [editingIndex, setEditingIndex] = useState(null);
   const [history, setHistory] = useState(playerHistory);
   const [sortScore, setSortScore] = useState('');
-  
+  const [editingEntry, setEditingEntry] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const itemsPerPage = 5;
@@ -117,8 +117,8 @@ function Endgame({playerName}) {
                           <input type="text" value={editedName} onChange={(event) => setEditedName(event.target.value)}
                           style={{marginRight: 0}} />
                             <ButtonSound className={EndgameStyle.Btn} onClick={() => {
-                               const updated = history.map((item, i) =>
-                                 i === idx? { ...item, player: editedName } : item
+                               const updated = history.map((item) =>
+                              item === editingEntry? { ...item, player: editedName } : item
                               );
                                setHistory(updated);
                                localStorage.setItem('matchStats', JSON.stringify(updated));
@@ -134,7 +134,10 @@ function Endgame({playerName}) {
                                 setEditingIndex(idx);
                                 setEditedName(player);
                             }}>
-                              <img className={EndgameStyle.EditBtn} src={Edit} alt="Edit icon"/>
+                              <img onClick={() => {
+                                 setEditingEntry(entry);
+                                 setEditedName(entry.player);
+                              }} className={EndgameStyle.EditBtn} src={Edit} alt="Edit icon"/>
                             </ButtonSound>
                             <span style={{ width: 30, display: "inline-block", textAlign: "center", marginRight: 120}}>{player}:&nbsp;</span>
                             <span>{score}</span>
