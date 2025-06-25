@@ -60,6 +60,18 @@ function Endgame({playerName}) {
    }
  }
 
+ const handleDelete = (relativeIndex) => {
+   const absoluteIndex = (currentPage - 1) * itemsPerPage + relativeIndex;
+   const updated = history.filter((_, i) => i !== absoluteIndex);
+   setHistory(updated);
+   localStorage.setItem('matchStats', JSON.stringify(updated));
+   const newTotalPages = Math.max(1, Math.ceil(updated.length / itemsPerPage));
+   if (currentPage > newTotalPages) {
+     setSearchParams({ page: newTotalPages });
+   }
+ };
+ 
+
   useEffect(() => {
      confetti();
      setEditedName(playerName);
@@ -113,6 +125,7 @@ function Endgame({playerName}) {
                                setEditingIndex(null);
                             }} >Update</ButtonSound>
                             <ButtonSound className={EndgameStyle.Btn} onClick={() => setEditingIndex(null)}>Cancel</ButtonSound>
+                            <ButtonSound className={EndgameStyle.Btn} onClick={() => handleDelete(idx)}>Delete</ButtonSound>
                         </>
                       ): (
                          <>
