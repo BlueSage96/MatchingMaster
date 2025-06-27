@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import GameBoard from '../shared/GameBoard';
+import GameBoard from '../features/GameBoard';
 import MarvelFetch from '../API/MarvelAPIFetch';
 import MatchStyle from '../css/modules/Match.module.css';
 import CardClick from '../assets/CardFlip.mp3';
-import { useSound } from '../context/SoundProvider';
+import { useSound } from '../context/SoundContext';
 import ButtonSound from '../shared/ButtonSound';
 
 function Match({ playerName, setPlayerName }) {
@@ -37,7 +37,7 @@ function Match({ playerName, setPlayerName }) {
   const modeFromState = location.state?.mode;
   const modeFromStorage = localStorage.getItem('lastMode');
   const gameMode = modeFromState || modeFromStorage || 'color';
-  const [apiError, setApiError] = useState("");
+  const [apiError, setApiError] = useState('');
 
   useEffect(() => {
     setPlayerName('');
@@ -51,7 +51,7 @@ function Match({ playerName, setPlayerName }) {
   function fisherYatesShuffle(array) {
     const shuffled = array.slice();
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor((Math.random()) * (i));
+      const j = Math.floor(Math.random() * i);
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
@@ -72,9 +72,8 @@ function Match({ playerName, setPlayerName }) {
       const doubleColors = [...baseColors, ...baseColors];
       const shuffled = fisherYatesShuffle(doubleColors);
       setGameDeck(shuffled);
-      
-      console.error(
-        'Error loading characters. : ', error);
+
+      console.error('Error loading characters. : ', error);
       setApiError('Falling back to color mode due to API error');
     } finally {
       setLoading(false);
@@ -242,7 +241,7 @@ function Match({ playerName, setPlayerName }) {
       >
         &larr; Back
       </ButtonSound>
-      {apiError && <p style={{color: 'red'}}>{apiError}</p>}
+      {apiError && <p style={{ color: 'red' }}>{apiError}</p>}
       <GameBoard
         gameDeck={gameDeck}
         flippedCards={flippedCards}

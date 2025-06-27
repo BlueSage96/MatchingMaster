@@ -1,4 +1,4 @@
-import Card from './Card';
+import Card from '../shared/Card';
 import GBStyle from '../css/modules/GameBoard.module.css';
 function GameBoard({
   gameDeck,

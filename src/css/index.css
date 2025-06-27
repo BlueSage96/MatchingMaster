@@ -13,12 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
-    font-family: Times New Roman, serif;
-}
-
 a {
-  font-weight: 500;
+  font-weight: 200;
   color: #646cff;
   text-decoration: inherit;
 }
