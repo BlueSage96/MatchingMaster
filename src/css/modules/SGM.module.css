@@ -1,0 +1,66 @@
+.Logo {
+    width: 480px;
+    height: 480px;
+    object-fit: contain;
+    position: relative;
+    top: -100px;
+    box-shadow: none !important;
+}
+
+.ModeDiv {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 40px;
+    width: 100%;
+    position: absolute;
+    top: 500px;
+  }
+
+  .CharModeBtn, .ComicModeBtn {
+    position: static;
+    display: block;
+    z-index: 1;
+    cursor: pointer;
+    box-shadow: none !important;
+  }
+
+  .Character {
+    width: 160px;
+    height: 200px;
+    display: block;
+    position: relative;
+    bottom: 5px;
+  }
+
+  .Comic {
+    width: 160px;
+    height: 210px;
+    display: block;
+  }
+
+.StartContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+.StartBtn {
+    position: absolute;
+    display: block;
+    z-index: 1;
+    cursor: pointer;
+    box-shadow: none !important;
+    bottom: 120px;
+  }
+
+  .Start {
+    width: 300px;
+    height: 150px;
+    object-fit: contain;
+    pointer-events: auto;
+    user-select: none;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+  }

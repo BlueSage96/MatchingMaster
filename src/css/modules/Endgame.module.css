@@ -44,6 +44,18 @@
     box-shadow: none !important;
 }
 
+.Player {
+    min-width: 30px;
+    max-width: 120px;
+    flex-grow: 1;
+    text-align: left;
+    margin-right: 80px;
+    overflow: hidden;
+    /* allows for multiple words in a player name on one line */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .SortByScore {
     background: black;
     border: 1px 1px gray;

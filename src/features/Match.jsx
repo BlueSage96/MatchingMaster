@@ -19,15 +19,6 @@ import {
 function Match({ playerName, setPlayerName }) {
   const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange', 'black', 'pink', 'turquoise'];
   const [matchState, dispatch] = useReducer(matchReducer, matchInitState);
-  // const [loading, setLoading] = useState(true);
-  // const [gameDeck, setGameDeck] = useState([]);
-  // const [matchedCards, setMatchedCards] = useState([]);
-  // const [flippedCards, setFlippedCards] = useState([]);
-  // const [lockedBoard, setLockedBoard] = useState(false);
-  // const [isGameOver, setIsGameOver] = useState(false);
-  // const [playerStats, setPlayerStats] = useState(null);
-  // const [attempts, setAttempts] = useState(0);
-  // const [apiError, setApiError] = useState('');
 
   const [nameSubmitted, setNameSubmitted] = useState(false);
   const { cardSoundEnabled } = useSound();
@@ -38,7 +29,7 @@ function Match({ playerName, setPlayerName }) {
   const modeFromState = location.state?.mode;
   const modeFromStorage = localStorage.getItem('lastMode');
   const gameMode = modeFromState || modeFromStorage || 'color';
- 
+  const marvelMode = location.state?.marvelMode || 'character';
 
   useEffect(() => {
     setPlayerName('');
@@ -58,20 +49,35 @@ function Match({ playerName, setPlayerName }) {
     return shuffled;
   }
 
-  /* Fetch images from Marvel API - fall back to color if it can't fetch */
-  async function loadCharacters() {
+  /* Fetch images from Marvel API - fall back to color if it can't fetch 
+      Consider a third option (else only) for mixing both types -> 
+      const images = await MarvelFetch() 
+  */
+  async function loadMarvelData() {
     try {
       dispatch({type: matchActions.setIsLoading, value: true});
-      const images = await MarvelFetch();
-      if (!images || images.length < 9) {
-        throw new Error('Not enough character images returned');
+      if (marvelMode === 'character') {
+        const images = await MarvelFetch(marvelMode);
+        if (!images || images.length < 9) {
+          throw new Error('Not enough character images returned');
+        }
+        const duplicates = [...images, ...images];
+        const shuffled = fisherYatesShuffle(duplicates);
+        dispatch({type: matchActions.setGameDeck, value: shuffled});
       }
-      const duplicates = [...images, ...images];
-      const shuffled = fisherYatesShuffle(duplicates);
-      dispatch({type: matchActions.setGameDeck, value: shuffled});
+      else if (marvelMode === 'comic') {
+        const images = await MarvelFetch(marvelMode);
+        if (!images || images.length < 9) {
+          throw new Error('Not enough character images returned');
+        }
+        const duplicates = [...images, ...images];
+        const shuffled = fisherYatesShuffle(duplicates);
+        dispatch({ type: matchActions.setGameDeck, value: shuffled });
+      }
     } 
     
     catch (error) {
+      // color matching failsafe
       const doubleColors = [...baseColors, ...baseColors];
       const shuffled = fisherYatesShuffle(doubleColors);
       dispatch({type: matchActions.setGameDeck, value: shuffled});
@@ -93,7 +99,7 @@ function Match({ playerName, setPlayerName }) {
       dispatch({type: matchActions.setFlippedCards, value:[]});
 
       if (gameMode === 'marvel') {
-        await loadCharacters();
+        await loadMarvelData();
       } else {
         const duplicated = [...baseColors, ...baseColors];
         dispatch({type: matchActions.setGameDeck, value: fisherYatesShuffle(duplicated)});
@@ -171,7 +177,7 @@ function Match({ playerName, setPlayerName }) {
     }
   }, [matchState.matchedCards, matchState.gameDeck, matchState.isGameOver, playerName, matchState.attempts]);
 
-  if (matchState.loading) {
+  if (matchState.isLoading) {
     return (
       <>
         <div className={MatchStyle.LoadingContainer}>
