@@ -16,7 +16,7 @@ async function MarvelAPIFetch (marvelMode) {
         const characterUrl = `https://gateway.marvel.com/v1/public/characters?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
         const comicUrl = `https://gateway.marvel.com/v1/public/comics?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
         
-        const url = marvelMode === 'character' ? characterUrl : comicUrl;
+        const url = marvelMode === 'characters' ? characterUrl : comicUrl;
         const response = await fetch(url);
 
         if (!response.ok){
@@ -32,35 +32,40 @@ async function MarvelAPIFetch (marvelMode) {
         const results = image.data.results;
 
         /* 
-            fetch thumbnail.path & thumbnail.extension 
-            filter out characters without images
+            character fetch thumbnail.path & thumbnail.extension 
+            comic fetch item.images[0].path & item.images[0].path
+            filter out characters or comics without images
+            improved filtering to handle errors (lines 44, 57, and 68)
         */
 
         const clean = results.filter(item => {
-            if (marvelMode === 'comics') {
-                if (item.images[0]) {
+             //let else be a mix of both characters & comics!
+            if (marvelMode === 'comic') {
+                const image = item.images?.[0];
+                if (!image || !image.path) {
                     return false;
                 }
-                const path = item.images[0].path.toLowerCase();
+                const path = image.path.toLowerCase();
                 return (
                     !path.includes("image_not_available") &&
                     !path.includes("4c002e0305708") &&
                     !path.includes("not_available")
-                )
+                );
             }
-            // may change to else if and let else be a mix of both characters & comics!
-            else {
-                if (!item.thumbnail){
-                return false;
+           
+            else if (marvelMode === 'characters') {
+                const thumb = item.thumbnail;
+                if (!thumb || !thumb.path){
+                    return false;
+                }
+                const path = thumb.path.toLowerCase();
+                return (
+                    !path.includes("image_not_available") &&
+                    !path.includes("4c002e0305708") &&
+                    !path.includes("not_available")
+                );
             }
-            const path = item.thumbnail.path.toLowerCase();
-            return (
-                !path.includes("image_not_available") &&
-                !path.includes("4c002e0305708") &&
-                !path.includes("not_available")
-            );
-            }
-            
+            return false;
         });
 
         console.log(`Filtered ${results.length - clean.length} ${results} with missing images`);
@@ -69,7 +74,7 @@ async function MarvelAPIFetch (marvelMode) {
         if (clean.length < 9) {
             throw new Error('Not enough valid character images found');
         }
-        //Return only the URL strings for the first 6 characters
+        //Return only the URL strings for the first 9 characters
         const cleanImages = clean
                 .slice(0, 9)
                 .map((item) => {
@@ -80,6 +85,8 @@ async function MarvelAPIFetch (marvelMode) {
                     return item.thumbnail.path + "." + item.thumbnail.extension; 
                     }          
                 });
+                console.log('Valid character thumbnails:', cleanImages.length);
+
             return cleanImages;
     }
 

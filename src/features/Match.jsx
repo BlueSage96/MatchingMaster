@@ -29,7 +29,7 @@ function Match({ playerName, setPlayerName }) {
   const modeFromState = location.state?.mode;
   const modeFromStorage = localStorage.getItem('lastMode');
   const gameMode = modeFromState || modeFromStorage || 'color';
-  const marvelMode = location.state?.marvelMode || 'character';
+  const marvelMode = location.state?.marvelMode || 'characters';
 
   useEffect(() => {
     setPlayerName('');
@@ -40,13 +40,25 @@ function Match({ playerName, setPlayerName }) {
   }, [setPlayerName, modeFromState]);
 
   // enhanced shuffling algorithm
-  function fisherYatesShuffle(array) {
-    const shuffled = array.slice();
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  function fisherYatesShuffle(array, numCols = 9) {
+    const arr = array.slice();
+    const result = [];
+    while (arr.length) {
+      // Try up to 10 times to pick a non-adjacent value
+      let idx = Math.floor(Math.random() * arr.length);
+      let tries = 0;
+      while (tries < 10) {
+        const candidate = arr[idx];
+        const pos = result.length;
+        const left = pos % numCols !== 0 && result[pos - 1] === candidate;
+        const up = pos >= numCols && result[pos - numCols] === candidate;
+        if (!left && !up) break;
+        idx = Math.floor(Math.random() * arr.length);
+        tries++;
+      }
+      result.push(arr.splice(idx, 1)[0]);
     }
-    return shuffled;
+    return result;
   }
 
   /* Fetch images from Marvel API - fall back to color if it can't fetch 
@@ -56,7 +68,7 @@ function Match({ playerName, setPlayerName }) {
   async function loadMarvelData() {
     try {
       dispatch({type: matchActions.setIsLoading, value: true});
-      if (marvelMode === 'character') {
+      if (marvelMode === 'characters') {
         const images = await MarvelFetch(marvelMode);
         if (!images || images.length < 9) {
           throw new Error('Not enough character images returned');
@@ -160,10 +172,19 @@ function Match({ playerName, setPlayerName }) {
       matchState.gameDeck.length > 0 && !matchState.isGameOver && !cancelled) {
       const numPairs = matchState.gameDeck.length / 2;
       const baseScore = numPairs * 100;
-      const penalty = Math.max(0, (matchState.attempts - numPairs) * 10);
+      // more dynamic penalty system
+      const penalty = Math.min(baseScore, Math.pow(Math.max(0, matchState.attempts - numPairs), 1.5) * 10);
+      let bonus = 0; 
+      if (matchState.attempts === numPairs) {
+         bonus = 50;
+      } else if (matchState.attempts === numPairs + 1) {
+        bonus = 25;
+      }
+      const salt = Math.floor(Math.random() * 10);
+
       const stats = {
         player: playerName,
-        score: Math.max(0, baseScore - penalty),
+        score: Math.max(0, Math.round(baseScore - penalty + bonus + salt)),
         attempts: matchState.attempts,
       };
       dispatch({type: matchActions.setPlayerStats, value: stats});

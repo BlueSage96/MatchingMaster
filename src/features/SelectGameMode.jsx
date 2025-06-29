@@ -12,6 +12,7 @@ function SelectGameMode() {
     const [selectMode, setSelectMode] = useState(null);
     const handleSelectMode = (mode) => {
         setSelectMode(mode);
+        console.log("Mode selected:", mode);
     }
     return (
       <>
@@ -20,7 +21,7 @@ function SelectGameMode() {
                 alt="Matching Master Logo" draggable="false" />
             </div>
         <div className={SGMStyle.ModeDiv}>
-            <ButtonSound invisible className={SGMStyle.CharModeBtn} onClick={() => handleSelectMode("character")}>
+            <ButtonSound invisible className={SGMStyle.CharModeBtn} onClick={() => handleSelectMode("characters")}>
                 <img className={SGMStyle.Character} src={Character} alt="Marvel character match mode" />
             </ButtonSound>
 
