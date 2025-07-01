@@ -1,5 +1,5 @@
 // Global sound for button clicks
-import { useSound } from '../context/SoundProvider';
+import { useSound } from '../context/SoundContext';
 import ButtonClick from '../assets/ButtonClick.wav';
 
 export default function ButtonSound({

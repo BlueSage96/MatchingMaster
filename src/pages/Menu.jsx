@@ -28,7 +28,7 @@ function Menu() {
             </ButtonSound>
 
             <ButtonSound invisible className={MenuStyle.MarModeBtn}
-              onClick={() => handleSelectMode('marvel')}>
+              onClick={() => navigate('/marvelMatchMode')}>
               <img className={MenuStyle.Marvel} src={Marvel} alt="Marvel mode button"/>
             </ButtonSound>
           </div>

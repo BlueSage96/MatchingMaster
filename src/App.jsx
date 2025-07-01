@@ -5,8 +5,9 @@ import Nav from './features/NavBar';
 import Menu from './pages/Menu';
 import Settings from './pages/Settings';
 import Instructions from './pages/Instructions';
-import ToGame from './pages/ToGame';
-import ToEndgame from './pages/ToGameOver';
+import Match from './features/Match';
+import Endgame from './features/Endgame';
+import SGM from './features/SelectGameMode';
 import NotFound from './pages/NotFound';
 import cover from './assets/cover.png';
 import background from './assets/background.png';
@@ -24,8 +25,9 @@ function App() {
           <Route path="/" element={<Menu />} />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/match" element={<ToGame playerName={playerName} setPlayerName={setPlayerName}/>} />
-          <Route path="/gameOver" element={<ToEndgame playerName={playerName} setPlayerName={setPlayerName}/>} />
+          <Route path="/marvelMatchMode" element={<SGM />} />
+          <Route path="/match" element={<Match playerName={playerName} setPlayerName={setPlayerName}/>} />
+          <Route path="/gameOver" element={<Endgame playerName={playerName} setPlayerName={setPlayerName}/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

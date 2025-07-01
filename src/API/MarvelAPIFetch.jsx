@@ -1,6 +1,6 @@
 import md5 from 'crypto-js/md5';
 
-async function MarvelAPIFetch () {
+async function MarvelAPIFetch (marvelMode) {
     try {
         const limit = 60;
         const offset = Math.floor(Math.random() * 1500);
@@ -13,7 +13,10 @@ async function MarvelAPIFetch () {
             throw new Error("Marvel API keys are missing in environment variables");
         }
 
-        const url = `https://gateway.marvel.com/v1/public/characters?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
+        const characterUrl = `https://gateway.marvel.com/v1/public/characters?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
+        const comicUrl = `https://gateway.marvel.com/v1/public/comics?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
+        
+        const url = marvelMode === 'characters' ? characterUrl : comicUrl;
         const response = await fetch(url);
 
         if (!response.ok){
@@ -26,33 +29,65 @@ async function MarvelAPIFetch () {
             throw new Error('Invalid response format from Marvel API');
         }
 
-        const characters = image.data.results;
+        const results = image.data.results;
 
         /* 
-            fetch thumbnail.path & thumbnail.extension 
-            filter out characters without images
+            character fetch thumbnail.path & thumbnail.extension 
+            comic fetch item.images[0].path & item.images[0].path
+            filter out characters or comics without images
+            improved filtering to handle errors (lines 44, 57, and 68)
         */
 
-        const cleanCharImg = characters.filter(charImg => {
-            if (!charImg.thumbnail){
-                return false;
+        const clean = results.filter(item => {
+             //let else be a mix of both characters & comics!
+            if (marvelMode === 'comic') {
+                const image = item.images?.[0];
+                if (!image || !image.path) {
+                    return false;
+                }
+                const path = image.path.toLowerCase();
+                return (
+                    !path.includes("image_not_available") &&
+                    !path.includes("4c002e0305708") &&
+                    !path.includes("not_available")
+                );
             }
-            const path = charImg.thumbnail.path.toLowerCase();
-            return (
-                !path.includes("image_not_available") &&
-                !path.includes("4c002e0305708") &&
-                !path.includes("not_available")
-            );
+           
+            else if (marvelMode === 'characters') {
+                const thumb = item.thumbnail;
+                if (!thumb || !thumb.path){
+                    return false;
+                }
+                const path = thumb.path.toLowerCase();
+                return (
+                    !path.includes("image_not_available") &&
+                    !path.includes("4c002e0305708") &&
+                    !path.includes("not_available")
+                );
+            }
+            return false;
         });
 
-        if (cleanCharImg.length < 9) {
+        console.log(`Filtered ${results.length - clean.length} ${results} with missing images`);
+        console.log(`Remaining valid ${results}: ${clean.length}`);
+
+        if (clean.length < 9) {
             throw new Error('Not enough valid character images found');
         }
+        //Return only the URL strings for the first 9 characters
+        const cleanImages = clean
+                .slice(0, 9)
+                .map((item) => {
+                    if (marvelMode === 'comic') {
+                        return item.images[0].path + "." + item.images[0].extension;
+                    }
+                    else {
+                    return item.thumbnail.path + "." + item.thumbnail.extension; 
+                    }          
+                });
+                console.log('Valid character thumbnails:', cleanImages.length);
 
-      const characterImages = cleanCharImg
-            .slice(0, 9)
-            .map((charImg) => `${charImg.thumbnail.path}.${charImg.thumbnail.extension}`);
-        return characterImages;
+            return cleanImages;
     }
 
     catch (error) {

@@ -111,7 +111,7 @@ function Endgame({playerName}) {
                const player = entry?.player ?? '';
                const score = entry?.score ?? 0;
                return (
-                  <div key={player + score + idx} style={{display: "flex", alignItems: "center", marginBottom: 16}}>
+                  <div key={player + score + idx} style={{display: "flex", alignItems: "center", marginBottom: 16, width: "100%"}}>
                       {editingIndex === idx ? (
                         <>
                           <input type="text" value={editedName} onChange={(event) => setEditedName(event.target.value)}
@@ -139,7 +139,7 @@ function Endgame({playerName}) {
                                  setEditedName(entry.player);
                               }} className={EndgameStyle.EditBtn} src={Edit} alt="Edit icon"/>
                             </ButtonSound>
-                            <span style={{ width: 30, display: "inline-block", textAlign: "center", marginRight: 120}}>{player}:&nbsp;</span>
+                            <span className={EndgameStyle.Player}>{player}:&nbsp;</span>
                             <span>{score}</span>
                          </>
                       )}
