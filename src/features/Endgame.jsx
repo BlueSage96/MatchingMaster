@@ -1,7 +1,7 @@
 import confetti from 'https://cdn.skypack.dev/canvas-confetti';
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import ButtonSound from '../shared/ButtonSound';
+import ButtonSound from '../context/ButtonSound';
 import EndgameStyle from '../css/modules/Endgame.module.css';
 import Edit from '../assets/edit.png';
 

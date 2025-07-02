@@ -7,10 +7,15 @@ export function SoundProvider({children}) {
     const [cardSoundEnabled, setCardSoundEnabled] = useState(true);
     const [bgSoundEnabled, setBGSoundEnabled] = useState(true);
 
+    //sepate volume states
+    const [buttonVolume, setButtonVolume] = useState(25);
+    const [cardVolume, setCardVolume] = useState(25);
+    const [bgVolume, setBGVolume] = useState(25);
+
     return (
-        <SoundContext.Provider value={{ buttonSoundEnabled, setButtonSoundEnabled,
-            cardSoundEnabled, setCardSoundEnabled, bgSoundEnabled, setBGSoundEnabled,
-        }}>
+        <SoundContext.Provider value={{ buttonSoundEnabled, setButtonSoundEnabled, buttonVolume, setButtonVolume,
+            cardSoundEnabled, setCardSoundEnabled, cardVolume, setCardVolume,
+            bgSoundEnabled, setBGSoundEnabled, bgVolume, setBGVolume}}>
             {children}
         </SoundContext.Provider>
     )

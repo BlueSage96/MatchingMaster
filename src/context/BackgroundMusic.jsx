@@ -15,18 +15,21 @@ export default function BackgroundMusic ({bgSoundEnabled, bgSongRef}) {
           if (bgSongRef) bgSongRef.current = audioRef.current;
        }
 
-       if (bgSoundEnabled && audioRef.current) {
-            audioRef.current.play();
-       } else if (audioRef.current) {
-          audioRef.current.pause();
-       }
+       //Always assign the ref, even if currently created
+       if (bgSongRef) bgSongRef.current = audioRef.current;
+
+      //  if (bgSoundEnabled && audioRef.current) {
+      //       audioRef.current.play();
+      //  } else if (audioRef.current) {
+      //     audioRef.current.pause();
+      //  }
 
        return () => {
          if (audioRef.current) {
             audioRef.current.pause();
          }
        };
-    },[bgSoundEnabled, bgSongRef]);
+    },[bgSongRef]);
     
     return null;
 }

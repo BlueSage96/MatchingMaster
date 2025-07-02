@@ -5,50 +5,53 @@ import GameLogo from '../assets/GameLogo.png';
 import Color from '../assets/color.png';
 import Marvel from '../assets/marvel.png';
 import Start from '../assets/start.png';
-import ButtonSound from '../shared/ButtonSound';
+import ButtonSound from '../context/ButtonSound';
 
 function Menu() {
-    const navigate = useNavigate();
-    const [selectMode, setSelectMode] = useState(null);
+  const navigate = useNavigate();
+  const [selectMode, setSelectMode] = useState(null);
 
-    const handleSelectMode = (mode) => {
-      setSelectMode(mode);
-    };
-    
-    return (
-      <>
-        <div className={MenuStyle.menuUI}>
-          <img className={MenuStyle.Logo} src={GameLogo} 
-          alt="Matching Master Logo" draggable="false" />
+  const handleSelectMode = (mode) => {
+    setSelectMode(mode);
+  };
 
-          <div className={MenuStyle.ModeDiv}>
-            <ButtonSound invisible className={MenuStyle.ColModeBtn}
-              onClick={() => handleSelectMode('color')}>
-              <img className={MenuStyle.Color} src={Color} alt="Color mode button" />
-            </ButtonSound>
+  return (
+    <>
+      <div className={MenuStyle.menuUI}>
+        <img className={MenuStyle.Logo} src={GameLogo} alt="Matching Master Logo" draggable="false" />
 
-            <ButtonSound invisible className={MenuStyle.MarModeBtn}
-              onClick={() => navigate('/marvelMatchMode')}>
-              <img className={MenuStyle.Marvel} src={Marvel} alt="Marvel mode button"/>
-            </ButtonSound>
-          </div>
+        <div className={MenuStyle.ModeDiv}>
+          <ButtonSound invisible className={MenuStyle.ColModeBtn} onClick={() => handleSelectMode('color')}>
+            <img className={MenuStyle.Color} src={Color} alt="Color mode button" />
+          </ButtonSound>
 
-          <div className={MenuStyle.StartContainer}>
-            <ButtonSound invisible className={MenuStyle.StartBtn}
-                onClick={() => {
-                    if (selectMode) navigate("/match", {state: {mode: selectMode}})
-                }}>
-                <img className={MenuStyle.Start} src={Start} alt="Start game button" 
-                    style={{
-                        opacity: selectMode ? 1 : 0.4,
-                        cursor: selectMode ? 'pointer' : 'not-allowed',
-                        pointerEvents: selectMode ? 'auto' : 'none',
-                    }}
-                />
-            </ButtonSound>
-          </div>
+          <ButtonSound invisible className={MenuStyle.MarModeBtn} onClick={() => navigate('/marvelMatchMode')}>
+            <img className={MenuStyle.Marvel} src={Marvel} alt="Marvel mode button" />
+          </ButtonSound>
         </div>
-      </>
-    );
+
+        <div className={MenuStyle.StartContainer}>
+          <ButtonSound
+            invisible
+            className={MenuStyle.StartBtn}
+            onClick={() => {
+              if (selectMode) navigate('/match', { state: { mode: selectMode } });
+            }}
+          >
+            <img
+              className={MenuStyle.Start}
+              src={Start}
+              alt="Start game button"
+              style={{
+                opacity: selectMode ? 1 : 0.4,
+                cursor: selectMode ? 'pointer' : 'not-allowed',
+                pointerEvents: selectMode ? 'auto' : 'none'
+              }}
+            />
+          </ButtonSound>
+        </div>
+      </div>
+    </>
+  );
 }
 export default Menu;

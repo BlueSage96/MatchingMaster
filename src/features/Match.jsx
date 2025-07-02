@@ -5,7 +5,7 @@ import MarvelFetch from '../API/MarvelAPIFetch';
 import MatchStyle from '../css/modules/Match.module.css';
 import CardClick from '../assets/CardFlip.mp3';
 import { useSound } from '../context/SoundContext';
-import ButtonSound from '../shared/ButtonSound';
+import ButtonSound from '../context/ButtonSound';
 
 //reducer function used to optimize - file organization & performance
 
@@ -40,19 +40,19 @@ function Match({ playerName, setPlayerName }) {
   }, [setPlayerName, modeFromState]);
 
   const handleGameReset = () => {
-    dispatch({type: matchActions.setFlippedCards, value: []});
-    dispatch({type: matchActions.setMatchedCards, value: []});
-    dispatch({type: matchActions.setIsGameOver, value: false});
-    dispatch({type: matchActions.setPlayerStats, value: {}})
-    dispatch({type: matchActions.setAttempts, value: 0});
+    dispatch({ type: matchActions.setFlippedCards, value: [] });
+    dispatch({ type: matchActions.setMatchedCards, value: [] });
+    dispatch({ type: matchActions.setIsGameOver, value: false });
+    dispatch({ type: matchActions.setPlayerStats, value: {} });
+    dispatch({ type: matchActions.setAttempts, value: 0 });
 
-    if (gameMode === "marvel") {
-       loadMarvelData();
+    if (gameMode === 'marvel') {
+      loadMarvelData();
     } else {
-       const duplicated = [...baseColors, ...baseColors];
-       dispatch({type: matchActions.setGameDeck, value: fisherYatesShuffle(duplicated)});
+      const duplicated = [...baseColors, ...baseColors];
+      dispatch({ type: matchActions.setGameDeck, value: fisherYatesShuffle(duplicated) });
     }
-  }
+  };
 
   // enhanced shuffling algorithm
   function fisherYatesShuffle(array, numCols = 9) {
@@ -82,7 +82,7 @@ function Match({ playerName, setPlayerName }) {
   */
   async function loadMarvelData() {
     try {
-      dispatch({type: matchActions.setIsLoading, value: true});
+      dispatch({ type: matchActions.setIsLoading, value: true });
       if (marvelMode === 'characters') {
         const images = await MarvelFetch(marvelMode);
         if (!images || images.length < 9) {
@@ -90,9 +90,8 @@ function Match({ playerName, setPlayerName }) {
         }
         const duplicates = [...images, ...images];
         const shuffled = fisherYatesShuffle(duplicates);
-        dispatch({type: matchActions.setGameDeck, value: shuffled});
-      }
-      else if (marvelMode === 'comic') {
+        dispatch({ type: matchActions.setGameDeck, value: shuffled });
+      } else if (marvelMode === 'comic') {
         const images = await MarvelFetch(marvelMode);
         if (!images || images.length < 9) {
           throw new Error('Not enough character images returned');
@@ -101,36 +100,32 @@ function Match({ playerName, setPlayerName }) {
         const shuffled = fisherYatesShuffle(duplicates);
         dispatch({ type: matchActions.setGameDeck, value: shuffled });
       }
-    } 
-    
-    catch (error) {
+    } catch (error) {
       // color matching failsafe
       const doubleColors = [...baseColors, ...baseColors];
       const shuffled = fisherYatesShuffle(doubleColors);
-      dispatch({type: matchActions.setGameDeck, value: shuffled});
+      dispatch({ type: matchActions.setGameDeck, value: shuffled });
 
       console.error('Error loading characters. : ', error);
-      dispatch({type: matchActions.setApiError, value:'Falling back to color mode due to API error'});
-    } 
-    
-    finally {
-      dispatch({type: matchActions.setIsLoading, value: false});
+      dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
+    } finally {
+      dispatch({ type: matchActions.setIsLoading, value: false });
     }
   }
 
   // Shuffling according to game mode
   useEffect(() => {
     async function setupDeck() {
-      dispatch({type: matchActions.setLoading, value:true});
-      dispatch({type: matchActions.setMatchedCards, value:[]});
-      dispatch({type: matchActions.setFlippedCards, value:[]});
+      dispatch({ type: matchActions.setLoading, value: true });
+      dispatch({ type: matchActions.setMatchedCards, value: [] });
+      dispatch({ type: matchActions.setFlippedCards, value: [] });
 
       if (gameMode === 'marvel') {
         await loadMarvelData();
       } else {
         const duplicated = [...baseColors, ...baseColors];
-        dispatch({type: matchActions.setGameDeck, value: fisherYatesShuffle(duplicated)});
-        dispatch({type: matchActions.setIsLoading, value: false});
+        dispatch({ type: matchActions.setGameDeck, value: fisherYatesShuffle(duplicated) });
+        dispatch({ type: matchActions.setIsLoading, value: false });
       }
     }
     setupDeck();
@@ -151,7 +146,8 @@ function Match({ playerName, setPlayerName }) {
 
   const handleFlippedCards = useCallback(
     (index) => {
-      if (matchState.lockedBoard || matchState.flippedCards.includes(index) || matchState.matchedCards.includes(index)) return;
+      if (matchState.lockedBoard || matchState.flippedCards.includes(index) || matchState.matchedCards.includes(index))
+        return;
 
       if (cardSoundEnabled && CardClickRef.current) {
         CardClickRef.currentTime = 0;
@@ -159,39 +155,52 @@ function Match({ playerName, setPlayerName }) {
       }
 
       const newFlipped = [...matchState.flippedCards, index];
-      dispatch({type: matchActions.setFlippedCards, value: newFlipped});
+      dispatch({ type: matchActions.setFlippedCards, value: newFlipped });
 
       if (newFlipped.length === 2) {
-        dispatch({type: matchActions.setLockedBoard, value: true});
-        dispatch({type: matchActions.setAttempts, value: matchState.attempts + 1});
-        
+        dispatch({ type: matchActions.setLockedBoard, value: true });
+        dispatch({ type: matchActions.setAttempts, value: matchState.attempts + 1 });
+
         const [firstIndex, secondIndex] = newFlipped;
 
         if (matchState.gameDeck[firstIndex] === matchState.gameDeck[secondIndex]) {
-          dispatch({type: matchActions.setMatchedCards, 
-            value: [...matchState.matchedCards, firstIndex, secondIndex]});
+          dispatch({
+            type: matchActions.setMatchedCards,
+            value: [...matchState.matchedCards, firstIndex, secondIndex]
+          });
         }
         setTimeout(() => {
-          dispatch({type: matchActions.setFlippedCards, value: []});
-          dispatch({type: matchActions.setLockedBoard, value: false});
+          dispatch({ type: matchActions.setFlippedCards, value: [] });
+          dispatch({ type: matchActions.setLockedBoard, value: false });
         }, 1000);
       }
     },
-    [matchState.flippedCards, matchState.lockedBoard, matchState.gameDeck, matchState.matchedCards, matchState.attempts, cardSoundEnabled]
+    [
+      matchState.flippedCards,
+      matchState.lockedBoard,
+      matchState.gameDeck,
+      matchState.matchedCards,
+      matchState.attempts,
+      cardSoundEnabled
+    ]
   );
 
   // No cleanup needed — no subscriptions or intervals set
   useEffect(() => {
     let cancelled = false;
-    if (matchState.matchedCards.length === matchState.gameDeck.length && 
-      matchState.gameDeck.length > 0 && !matchState.isGameOver && !cancelled) {
+    if (
+      matchState.matchedCards.length === matchState.gameDeck.length &&
+      matchState.gameDeck.length > 0 &&
+      !matchState.isGameOver &&
+      !cancelled
+    ) {
       const numPairs = matchState.gameDeck.length / 2;
       const baseScore = numPairs * 100;
       // more dynamic penalty system
       const penalty = Math.min(baseScore, Math.pow(Math.max(0, matchState.attempts - numPairs), 1.5) * 10);
-      let bonus = 0; 
+      let bonus = 0;
       if (matchState.attempts === numPairs) {
-         bonus = 50;
+        bonus = 50;
       } else if (matchState.attempts === numPairs + 1) {
         bonus = 25;
       }
@@ -200,12 +209,12 @@ function Match({ playerName, setPlayerName }) {
       const stats = {
         player: playerName,
         score: Math.max(0, Math.round(baseScore - penalty + bonus + salt)),
-        attempts: matchState.attempts,
+        attempts: matchState.attempts
       };
-      dispatch({type: matchActions.setPlayerStats, value: stats});
+      dispatch({ type: matchActions.setPlayerStats, value: stats });
 
       setTimeout(() => {
-        dispatch({type: matchActions.setIsGameOver, value: true});
+        dispatch({ type: matchActions.setIsGameOver, value: true });
       }, 1000);
       return () => {
         cancelled = true;
@@ -271,7 +280,9 @@ function Match({ playerName, setPlayerName }) {
         &larr; Back
       </ButtonSound>
 
-      <ButtonSound style={{position: "relative", left: 500, bottom: 40}} onClick={() => handleGameReset()}>Reset</ButtonSound>
+      <ButtonSound style={{ position: 'relative', left: 500, bottom: 40 }} onClick={() => handleGameReset()}>
+        Reset
+      </ButtonSound>
 
       {matchState.apiError && <p style={{ color: 'red' }}>{matchState.apiError}</p>}
       <GameBoard

@@ -1,29 +1,26 @@
 import { useNavigate } from 'react-router-dom';
-import ButtonSound from "../shared/ButtonSound";
+import ButtonSound from '../context/ButtonSound';
 import InstStyle from '../css/modules/Instructions.module.css';
-import GIF from "../assets/MatchingMaster.gif";
+import GIF from '../assets/MatchingMaster.gif';
 
-function Instructions () {
-    const navigate = useNavigate();
-    return (
-      <>
-        <ButtonSound className={InstStyle.backButton} onClick={() => navigate(-1)}>
-          &larr; Back
-        </ButtonSound>
+function Instructions() {
+  const navigate = useNavigate();
+  return (
+    <>
+      <ButtonSound className={InstStyle.backButton} onClick={() => navigate(-1)}>
+        &larr; Back
+      </ButtonSound>
 
-        <h1 style={{ position: 'absolute', top: '235px', margin: "4px 8px" }}>Instructions</h1>
+      <h1 style={{ position: 'absolute', top: '235px', margin: '4px 8px' }}>Instructions</h1>
 
-        <div className={InstStyle.panel}> 
-          <p>
-            Choose a matching mode such as color or Marvel characters. Match all
-            card pairs to win the game. Use settings to toggle background music as well
-            as button and card clicking sounds.
-          </p>
-          <img className={InstStyle.GIF} src={GIF} alt="Matching Master gif" />
-        </div>
-      
-      </>
-    );
-    
+      <div className={InstStyle.panel}>
+        <p>
+          Choose a matching mode such as color or Marvel characters. Match all card pairs to win the game. Use settings
+          to toggle background music as well as button and card clicking sounds.
+        </p>
+        <img className={InstStyle.GIF} src={GIF} alt="Matching Master gif" />
+      </div>
+    </>
+  );
 }
 export default Instructions;
