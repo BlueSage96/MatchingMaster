@@ -39,6 +39,21 @@ function Match({ playerName, setPlayerName }) {
     return () => {};
   }, [setPlayerName, modeFromState]);
 
+  const handleGameReset = () => {
+    dispatch({type: matchActions.setFlippedCards, value: []});
+    dispatch({type: matchActions.setMatchedCards, value: []});
+    dispatch({type: matchActions.setIsGameOver, value: false});
+    dispatch({type: matchActions.setPlayerStats, value: {}})
+    dispatch({type: matchActions.setAttempts, value: 0});
+
+    if (gameMode === "marvel") {
+       loadMarvelData();
+    } else {
+       const duplicated = [...baseColors, ...baseColors];
+       dispatch({type: matchActions.setGameDeck, value: fisherYatesShuffle(duplicated)});
+    }
+  }
+
   // enhanced shuffling algorithm
   function fisherYatesShuffle(array, numCols = 9) {
     const arr = array.slice();
@@ -255,6 +270,9 @@ function Match({ playerName, setPlayerName }) {
       <ButtonSound className={MatchStyle.GameBackBtn} onClick={() => navigate(-1)}>
         &larr; Back
       </ButtonSound>
+
+      <ButtonSound style={{position: "relative", left: 500, bottom: 40}} onClick={() => handleGameReset()}>Reset</ButtonSound>
+
       {matchState.apiError && <p style={{ color: 'red' }}>{matchState.apiError}</p>}
       <GameBoard
         gameDeck={matchState.gameDeck}
