@@ -90,21 +90,28 @@ function Settings() {
           >
             {cardSoundEnabled ? 'ON' : 'OFF'}
           </button>
-        </div>
+         </div>
 
-        <hr className={SettingsStyle.Line} />
+        <hr className={SettingsStyle.Line}/>
+
         <div className={SettingsStyle.Sound}>
-          <span>Background Music:</span>
+          <div style={{display: "flex"}}>
+            <span>Background Music:</span>
           {bgSoundEnabled && (
-            <Volume volume={bgVolume} setVolume={setBGVolume}/>
-          )}
+            <>
+              <div style={{marginLeft: 48}}>
+                  <Volume volume={bgVolume} setVolume={setBGVolume}/>
+              </div>
+            </>
+            )}
+          </div>
+          
           <button
             className={SettingsStyle.Off}
             onClick={() => {
               const newState = !bgSoundEnabled;
               setBGSoundEnabled(newState);
               if (newState && bgSongRef.current) {
-                bgSongRef.current.currentTime = 0;
                 bgSongRef.current.play();
               } else if (bgSongRef.current) {
                 bgSongRef.current.pause();
