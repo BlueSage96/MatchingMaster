@@ -7,8 +7,7 @@ import CardClick from '../assets/CardFlip.mp3';
 import { useSound } from '../context/SoundContext';
 import ButtonSound from '../context/ButtonSound';
 
-//reducer function used to optimize - file organization & performance
-
+//reducer function used to optimize - file organization & performance$
 import {
   initialState as matchInitState,
   actions as matchActions,
