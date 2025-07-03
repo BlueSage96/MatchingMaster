@@ -12,7 +12,7 @@ import {
     matchReducer as matchReducer
 } from '../../reducers/match.reducer';
 
-function MatchLogic (playerName, setPlayerName) {
+function MatchLogic (playerName, setPlayerName, gameTimer) {
     const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange', 'black', 'pink', 'turquoise'];
     const [matchState, dispatch] = useReducer(matchReducer, matchInitState);
     const { cardSoundEnabled } = useSound();
@@ -25,6 +25,11 @@ function MatchLogic (playerName, setPlayerName) {
     const modeFromStorage = localStorage.getItem('lastMode');
     const gameMode = modeFromState || modeFromStorage || 'color';
     const marvelMode = location.state?.marvelMode || 'characters';
+    
+    const totalTime = Math.floor((Date.now() - gameTimer) / 1000);
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = totalTime % 60;
+    const paddedSeconds = String(seconds).padStart(2,'0');
 
     useEffect(() => {
       setPlayerName('');
@@ -123,14 +128,8 @@ function MatchLogic (playerName, setPlayerName) {
       };
     }, []);
 
-    const handleFlippedCards = useCallback(
-      (index) => {
-        if (
-          matchState.lockedBoard ||
-          matchState.flippedCards.includes(index) ||
-          matchState.matchedCards.includes(index)
-        )
-          return;
+    const handleFlippedCards = useCallback((index) => {
+        if (matchState.lockedBoard || matchState.flippedCards.includes(index) || matchState.matchedCards.includes(index)) return;
 
         if (cardSoundEnabled && CardClickRef.current) {
           CardClickRef.currentTime = 0;
@@ -163,27 +162,37 @@ function MatchLogic (playerName, setPlayerName) {
     // No cleanup needed — no subscriptions or intervals set
     useEffect(() => {
       let cancelled = false;
-      if (
-        matchState.matchedCards.length === matchState.gameDeck.length &&
-        matchState.gameDeck.length > 0 &&
-        !matchState.isGameOver &&
-        !cancelled
-      ) {
+      if (matchState.matchedCards.length === matchState.gameDeck.length &&
+        matchState.gameDeck.length > 0 && !matchState.isGameOver && !cancelled) {
         const numPairs = matchState.gameDeck.length / 2;
         const baseScore = numPairs * 100;
         //more dynamic penalty system
         const penalty = Math.min(baseScore, Math.pow(Math.max(0, matchState.attempts - numPairs), 1.5) * 10);
+
         let bonus = 0;
         if (matchState.attempts === numPairs) {
           bonus = 50;
         } else if (matchState.attempts === numPairs + 1) {
           bonus = 25;
         }
+
+        let timeBonus = 0;
+        if (totalTime < 30) {
+          timeBonus = 50;
+        } else if (totalTime < 60) {
+          timeBonus = 25;
+        } else if (totalTime >= 60) {
+           timeBonus -= 25;
+        }
+
+        console.log("TimeBonus:",timeBonus);
+
         const salt = Math.floor(Math.random() * 10);
         const stats = {
           player: playerName,
-          score: Math.max(0, Math.round(baseScore - penalty + bonus + salt)),
-          attempts: matchState.attempts
+          score: Math.max(0, Math.round(baseScore - penalty + bonus + salt + timeBonus)),
+          attempts: matchState.attempts,
+          time: `${minutes}:${paddedSeconds}`
         };
         dispatch({ type: matchActions.setPlayerStats, value: stats });
 
@@ -194,7 +203,8 @@ function MatchLogic (playerName, setPlayerName) {
           cancelled = true;
         };
       }
-    }, [matchState.matchedCards, matchState.gameDeck, matchState.isGameOver, playerName, matchState.attempts]);
+    }, [matchState.matchedCards, matchState.gameDeck, matchState.isGameOver, matchState.attempts, 
+      playerName, minutes, paddedSeconds, totalTime]);
 
    return {
       matchState,

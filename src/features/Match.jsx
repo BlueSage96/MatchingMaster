@@ -10,17 +10,8 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
   const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange', 'black', 'pink', 'turquoise'];
 
   const {
-    handleFlippedCards,
-    matchState,
-    matchActions,
-    dispatch,
-    nameSubmitted,
-    setNameSubmitted,
-    gameMode,
-    navigate,
-    fisherYatesShuffle,
-    loadMarvelData
-  } = MatchLogic(playerName, setPlayerName, gameTimer);
+    handleFlippedCards, matchState,matchActions,dispatch,nameSubmitted, setNameSubmitted,
+    gameMode, navigate, fisherYatesShuffle, loadMarvelData} = MatchLogic(playerName, setPlayerName, gameTimer);
 
   useEffect(() => {
     if (!gameTimer) {
@@ -109,6 +100,7 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
       <ButtonSound style={{ position: 'relative', left: 500, bottom: 40 }} onClick={() => handleGameReset()}>
         Reset
       </ButtonSound>
+
       <MatchTimer gameTimer={gameTimer} setGameTimer={setGameTimer} />
 
       {matchState.apiError && (

@@ -49,11 +49,15 @@
     max-width: 120px;
     flex-grow: 1;
     text-align: left;
-    margin-right: 80px;
+    margin-right: 40px;
     overflow: hidden;
-    /* allows for multiple words in a player name on one line */
     white-space: nowrap;
+}
+
+.PlayerEllipsis {
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .SortByScore {

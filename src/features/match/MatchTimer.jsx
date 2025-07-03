@@ -29,9 +29,7 @@ function MatchTimer({gameTimer, setGameTimer}) {
     return (
         <>
             {gameTimer && (
-                <Timer>
-                    Time {minutes}:{paddedSeconds}
-                </Timer>
+                <Timer>Time {minutes}:{paddedSeconds}</Timer>
             )}
         </>
     )
