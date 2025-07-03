@@ -122,7 +122,13 @@ function Endgame({ playerName, setGameTimer }) {
       <h1>Game Over!</h1>
       <div className={EndgameStyle.leaderboard}>
         <div className={EndgameStyle.statsInfo}>
-          <h2 style={{ fontSize: 28, textDecoration: 'underline' }}>Player Stats</h2>
+          <h2 style={{ fontSize: 28, textDecoration: 'underline', margin: "2px" }}>Player Stats</h2>
+        </div>
+
+        <div className={EndgameStyle.Titles}>
+            <h3 style={{marginRight: 20}}>Name:</h3>
+            <h3>Score:</h3>
+            <h3>Time:</h3>
         </div>
 
         <div className={EndgameStyle.statsInfo}>
