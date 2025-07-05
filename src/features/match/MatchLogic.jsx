@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback, useReducer } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MarvelFetch from '../../API/MarvelAPIFetch';
+import Pokéfetch from "../../API/PokémonAPIFetch";
 import CardClick from '../../assets/CardFlip.mp3';
 import { useSound } from '../../context/SoundContext';
 
@@ -62,7 +63,7 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
     }
 
     /* Fetch images from Marvel API - fall back to color if it can't fetch */
-    async function loadMarvelData() {
+    async function loadMarvelData () {
       try {
         dispatch({ type: matchActions.setIsLoading, value: true });
         if (marvelMode === 'characters') {
@@ -87,10 +88,32 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
         const shuffled = fisherYatesShuffle(doubleColors);
         dispatch({ type: matchActions.setGameDeck, value: shuffled });
 
-        console.error('Error loading characters. : ', error);
+        console.error('Error loading characters: ', error);
         dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
       } finally {
         dispatch({ type: matchActions.setIsLoading, value: false });
+      }
+    }
+
+    async function loadPokéData () {
+      try {
+        dispatch({ type: matchActions.setIsLoading, value: true});
+        const images = await Pokéfetch();
+        if (!images || images.length < 9) {
+           throw new Error('Not enough Pokémon images returned');
+        }
+        const duplicates = [...images,...images];
+        const shuffled = fisherYatesShuffle(duplicates);
+        dispatch({ type: matchActions.setGameDeck, value: shuffled });
+      } catch (error) {
+         const doubleColors = [...baseColors,...baseColors];
+         const shuffled = fisherYatesShuffle(doubleColors);
+         dispatch({ type: matchActions.setGameDeck, value: shuffled});
+
+         console.error('Error loading characters:', error);
+         dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
+      } finally {
+         dispatch({ type: matchActions.setIsLoading, value: false });
       }
     }
 
@@ -103,6 +126,8 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
 
         if (gameMode === 'marvel') {
           await loadMarvelData();
+        } else if (gameMode === 'pokémon') {
+           await loadPokéData();
         } else {
           const duplicated = [...baseColors, ...baseColors];
           dispatch({
@@ -216,7 +241,8 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
       gameMode,
       navigate,
       fisherYatesShuffle,
-      loadMarvelData
+      loadMarvelData,
+      loadPokéData,
    }
     
 }

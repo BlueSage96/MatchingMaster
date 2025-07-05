@@ -61,15 +61,12 @@ async function MarvelAPIFetch (marvelMode) {
                 const path = thumb.path.toLowerCase();
                 return (
                     !path.includes("image_not_available") &&
-                    !path.includes("4c002e0305708") &&
-                    !path.includes("not_available")
+                    !path.includes("not_available") &&
+                    !path.includes("4c002e0305708")
                 );
             }
             return false;
         });
-
-        console.log(`Filtered ${results.length - clean.length} ${results} with missing images`);
-        console.log(`Remaining valid ${results}: ${clean.length}`);
 
         if (clean.length < 9) {
             throw new Error('Not enough valid character images found');
@@ -85,17 +82,13 @@ async function MarvelAPIFetch (marvelMode) {
                     return item.thumbnail.path + "." + item.thumbnail.extension; 
                     }          
                 });
-                console.log('Valid character thumbnails:', cleanImages.length);
 
             return cleanImages;
     }
 
     catch (error) {
         console.error('Error in MarvelAPI fetch:',error);
-        return [
-            'red','blue','green','purple','orange','yellow',
-            'black','pink','turquoise'
-        ];
+        return ['blue','red','green','purple','orange','yellow','black','pink','turquoise'];
     }
 
 }

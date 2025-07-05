@@ -11,13 +11,15 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
 
   const {
     handleFlippedCards, matchState,matchActions,dispatch,nameSubmitted, setNameSubmitted,
-    gameMode, navigate, fisherYatesShuffle, loadMarvelData} = MatchLogic(playerName, setPlayerName, gameTimer);
+    gameMode, navigate, fisherYatesShuffle, loadMarvelData, loadPokéData} = MatchLogic(playerName, setPlayerName, gameTimer);
 
+  //reset when leaving page
   useEffect(() => {
-    if (!gameTimer) {
-      setGameTimer(Date.now());
+    setGameTimer(Date.now());
+    return () => {
+      setGameTimer(null);
     }
-  }, [gameTimer, setGameTimer]);
+  }, [setGameTimer]);
 
   const handleGameReset = () => {
     dispatch({ type: matchActions.setFlippedCards, value: [] });
@@ -25,17 +27,15 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
     dispatch({ type: matchActions.setIsGameOver, value: false });
     dispatch({ type: matchActions.setPlayerStats, value: {} });
     dispatch({ type: matchActions.setAttempts, value: 0 });
+    
+     setGameTimer(Date.now());
 
-    if (gameMode === 'marvel') {
-      loadMarvelData();
-      setGameTimer(Date.now());
-    } else {
-      const duplicated = [...baseColors, ...baseColors];
-      dispatch({
-        type: matchActions.setGameDeck,
-        value: fisherYatesShuffle(duplicated)
-      });
-      setGameTimer(Date.now());
+    if (gameMode === 'color') {
+       dispatch({ type: matchActions.setGameDeck, value: fisherYatesShuffle([...baseColors, ...baseColors] )});
+    } else if (gameMode === 'marvel') {
+       loadMarvelData();
+    } else if (gameMode === 'pokémon') {
+       loadPokéData();
     }
   };
 
@@ -47,7 +47,7 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
             <p>Loading game cards...</p>
           </div>
           <div className={MatchStyle.FetchingMode}>
-            <p>{gameMode === 'marvel' ? 'Fetching Marvel characters...' : 'Preparing color cards...'}</p>
+            <p>{gameMode === 'marvel' ? 'Fetching Marvel characters...' : gameMode === 'pokémon' ? 'Fetching Pokémon characters' : 'Preparing color cards...'}</p>
           </div>
         </div>
       </>
@@ -97,7 +97,7 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
         &larr; Back
       </ButtonSound>
 
-      <ButtonSound style={{ position: 'relative', left: 500, bottom: 40 }} onClick={() => handleGameReset()}>
+      <ButtonSound style={{ position: 'relative', left: 525, bottom: 40 }} onClick={() => handleGameReset()}>
         Reset
       </ButtonSound>
 
