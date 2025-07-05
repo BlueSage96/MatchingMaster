@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback, useReducer } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MarvelFetch from '../../API/MarvelAPIFetch';
+import Pokéfetch from "../../API/PokémonAPIFetch";
 import CardClick from '../../assets/CardFlip.mp3';
 import { useSound } from '../../context/SoundContext';
 
@@ -12,7 +13,7 @@ import {
     matchReducer as matchReducer
 } from '../../reducers/match.reducer';
 
-function MatchLogic (playerName, setPlayerName) {
+function MatchLogic (playerName, setPlayerName, gameTimer) {
     const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange', 'black', 'pink', 'turquoise'];
     const [matchState, dispatch] = useReducer(matchReducer, matchInitState);
     const { cardSoundEnabled } = useSound();
@@ -25,6 +26,11 @@ function MatchLogic (playerName, setPlayerName) {
     const modeFromStorage = localStorage.getItem('lastMode');
     const gameMode = modeFromState || modeFromStorage || 'color';
     const marvelMode = location.state?.marvelMode || 'characters';
+    
+    const totalTime = Math.floor((Date.now() - gameTimer) / 1000);
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = totalTime % 60;
+    const paddedSeconds = String(seconds).padStart(2,'0');
 
     useEffect(() => {
       setPlayerName('');
@@ -57,7 +63,7 @@ function MatchLogic (playerName, setPlayerName) {
     }
 
     /* Fetch images from Marvel API - fall back to color if it can't fetch */
-    async function loadMarvelData() {
+    async function loadMarvelData () {
       try {
         dispatch({ type: matchActions.setIsLoading, value: true });
         if (marvelMode === 'characters') {
@@ -82,10 +88,32 @@ function MatchLogic (playerName, setPlayerName) {
         const shuffled = fisherYatesShuffle(doubleColors);
         dispatch({ type: matchActions.setGameDeck, value: shuffled });
 
-        console.error('Error loading characters. : ', error);
+        console.error('Error loading characters: ', error);
         dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
       } finally {
         dispatch({ type: matchActions.setIsLoading, value: false });
+      }
+    }
+
+    async function loadPokéData () {
+      try {
+        dispatch({ type: matchActions.setIsLoading, value: true});
+        const images = await Pokéfetch();
+        if (!images || images.length < 9) {
+           throw new Error('Not enough Pokémon images returned');
+        }
+        const duplicates = [...images,...images];
+        const shuffled = fisherYatesShuffle(duplicates);
+        dispatch({ type: matchActions.setGameDeck, value: shuffled });
+      } catch (error) {
+         const doubleColors = [...baseColors,...baseColors];
+         const shuffled = fisherYatesShuffle(doubleColors);
+         dispatch({ type: matchActions.setGameDeck, value: shuffled});
+
+         console.error('Error loading characters:', error);
+         dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
+      } finally {
+         dispatch({ type: matchActions.setIsLoading, value: false });
       }
     }
 
@@ -98,6 +126,8 @@ function MatchLogic (playerName, setPlayerName) {
 
         if (gameMode === 'marvel') {
           await loadMarvelData();
+        } else if (gameMode === 'pokémon') {
+           await loadPokéData();
         } else {
           const duplicated = [...baseColors, ...baseColors];
           dispatch({
@@ -123,14 +153,8 @@ function MatchLogic (playerName, setPlayerName) {
       };
     }, []);
 
-    const handleFlippedCards = useCallback(
-      (index) => {
-        if (
-          matchState.lockedBoard ||
-          matchState.flippedCards.includes(index) ||
-          matchState.matchedCards.includes(index)
-        )
-          return;
+    const handleFlippedCards = useCallback((index) => {
+        if (matchState.lockedBoard || matchState.flippedCards.includes(index) || matchState.matchedCards.includes(index)) return;
 
         if (cardSoundEnabled && CardClickRef.current) {
           CardClickRef.currentTime = 0;
@@ -158,40 +182,42 @@ function MatchLogic (playerName, setPlayerName) {
         }
       },
 
-      [
-        matchState.flippedCards,
-        matchState.lockedBoard,
-        matchState.gameDeck,
-        matchState.matchedCards,
-        matchState.attempts,
-        cardSoundEnabled
-      ]
-    );
+      [matchState.flippedCards, matchState.lockedBoard, matchState.gameDeck, matchState.matchedCards, matchState.attempts, cardSoundEnabled]);
 
     // No cleanup needed — no subscriptions or intervals set
     useEffect(() => {
       let cancelled = false;
-      if (
-        matchState.matchedCards.length === matchState.gameDeck.length &&
-        matchState.gameDeck.length > 0 &&
-        !matchState.isGameOver &&
-        !cancelled
-      ) {
+      if (matchState.matchedCards.length === matchState.gameDeck.length &&
+        matchState.gameDeck.length > 0 && !matchState.isGameOver && !cancelled) {
         const numPairs = matchState.gameDeck.length / 2;
         const baseScore = numPairs * 100;
         //more dynamic penalty system
         const penalty = Math.min(baseScore, Math.pow(Math.max(0, matchState.attempts - numPairs), 1.5) * 10);
+
         let bonus = 0;
         if (matchState.attempts === numPairs) {
           bonus = 50;
         } else if (matchState.attempts === numPairs + 1) {
           bonus = 25;
         }
+
+        let timeBonus = 0;
+        if (totalTime < 30) {
+          timeBonus = 50;
+        } else if (totalTime < 60) {
+          timeBonus = 25;
+        } else if (totalTime >= 60) {
+           timeBonus -= 25;
+        }
+
+        console.log("TimeBonus:",timeBonus);
+
         const salt = Math.floor(Math.random() * 10);
         const stats = {
           player: playerName,
-          score: Math.max(0, Math.round(baseScore - penalty + bonus + salt)),
-          attempts: matchState.attempts
+          score: Math.max(0, Math.round(baseScore - penalty + bonus + salt + timeBonus)),
+          attempts: matchState.attempts,
+          time: `${minutes}:${paddedSeconds}`
         };
         dispatch({ type: matchActions.setPlayerStats, value: stats });
 
@@ -202,7 +228,8 @@ function MatchLogic (playerName, setPlayerName) {
           cancelled = true;
         };
       }
-    }, [matchState.matchedCards, matchState.gameDeck, matchState.isGameOver, playerName, matchState.attempts]);
+    }, [matchState.matchedCards, matchState.gameDeck, matchState.isGameOver, matchState.attempts, 
+      playerName, minutes, paddedSeconds, totalTime]);
 
    return {
       matchState,
@@ -214,7 +241,8 @@ function MatchLogic (playerName, setPlayerName) {
       gameMode,
       navigate,
       fisherYatesShuffle,
-      loadMarvelData
+      loadMarvelData,
+      loadPokéData,
    }
     
 }

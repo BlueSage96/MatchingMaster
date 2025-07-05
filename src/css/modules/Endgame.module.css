@@ -17,6 +17,15 @@
     justify-content: center;
 }
 
+.Titles {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 2px 4px;
+    margin-left: 42px;
+    text-decoration: underline;
+}
+
 .Btn {
     padding: 6px 6px;
     margin: 2px 4px;
@@ -49,11 +58,15 @@
     max-width: 120px;
     flex-grow: 1;
     text-align: left;
-    margin-right: 80px;
+    margin-right: 10px;
     overflow: hidden;
-    /* allows for multiple words in a player name on one line */
     white-space: nowrap;
+}
+
+.PlayerEllipsis {
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .SortByScore {

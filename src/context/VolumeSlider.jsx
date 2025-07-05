@@ -36,7 +36,7 @@ function VolumeSlider({volume, setVolume}) {
             opacity: volume < 50 ? 1 : 0.5, transition: "opacity 0.3s ease-in-out"}}/>
         <Slider
         aria-label="Volume"
-        min={10}
+        min={0}
         max={100}
         value={volume}
         marks={VolumeTicks}

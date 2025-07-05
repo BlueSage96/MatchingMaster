@@ -3,17 +3,27 @@ import '../css/Card.css';
    Card flipping logic
 */
 function Card({ onClick, color, flipped }) {
+  let displayValue = '';
+  
+  if (typeof color === 'string') {
+    displayValue = color;
+  } else if (typeof color === 'object' && color !== null) {
+     displayValue = typeof color.image === 'string' ? color.image : '';
+  }
+
+  const isImage = typeof displayValue === 'string' && displayValue.startsWith('http');
+
   return (
     <>
       <div className="card-container" onClick={onClick}>
         <div className={`card-inner ${flipped ? 'flipped' : ''}`}>
           <div className="card-front" style={
-            flipped ? color.startsWith("http") ? {
-              backgroundImage: `url(${color})`,
+            flipped ? isImage ? {
+              backgroundImage: `url(${displayValue})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }
-            : { backgroundColor: color}
+            : { backgroundColor: displayValue}
             : {}
           }
              ></div>

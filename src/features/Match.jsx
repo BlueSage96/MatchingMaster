@@ -1,14 +1,25 @@
-import GameBoard from '../features/GameBoard';
+import { useEffect } from 'react';
+import GameBoard from './GameBoard';
 import MatchStyle from '../css/modules/Match.module.css';
 import ButtonSound from '../context/ButtonSound';
-import MatchLogic from "../features/match/MatchLogic";
+import MatchLogic from '../features/match/MatchLogic';
+import MatchTimer from '../features/match/MatchTimer';
 
-//core gameplay logic for card matching
-function Match({ playerName, setPlayerName }) {
+//Core gameplay logic for card matching
+function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
   const baseColors = ['blue', 'red', 'green', 'purple', 'yellow', 'orange', 'black', 'pink', 'turquoise'];
 
-  const { handleFlippedCards, matchState, matchActions, dispatch, nameSubmitted, setNameSubmitted, 
-    gameMode, navigate, fisherYatesShuffle, loadMarvelData } = MatchLogic(playerName,setPlayerName);
+  const {
+    handleFlippedCards, matchState,matchActions,dispatch,nameSubmitted, setNameSubmitted,
+    gameMode, navigate, fisherYatesShuffle, loadMarvelData, loadPokéData} = MatchLogic(playerName, setPlayerName, gameTimer);
+
+  //reset when leaving page
+  useEffect(() => {
+    setGameTimer(Date.now());
+    return () => {
+      setGameTimer(null);
+    }
+  }, [setGameTimer]);
 
   const handleGameReset = () => {
     dispatch({ type: matchActions.setFlippedCards, value: [] });
@@ -16,12 +27,15 @@ function Match({ playerName, setPlayerName }) {
     dispatch({ type: matchActions.setIsGameOver, value: false });
     dispatch({ type: matchActions.setPlayerStats, value: {} });
     dispatch({ type: matchActions.setAttempts, value: 0 });
+    
+     setGameTimer(Date.now());
 
-    if (gameMode === 'marvel') {
-      loadMarvelData();
-    } else {
-      const duplicated = [...baseColors, ...baseColors];
-      dispatch({ type: matchActions.setGameDeck, value: fisherYatesShuffle(duplicated) });
+    if (gameMode === 'color') {
+       dispatch({ type: matchActions.setGameDeck, value: fisherYatesShuffle([...baseColors, ...baseColors] )});
+    } else if (gameMode === 'marvel') {
+       loadMarvelData();
+    } else if (gameMode === 'pokémon') {
+       loadPokéData();
     }
   };
 
@@ -33,7 +47,7 @@ function Match({ playerName, setPlayerName }) {
             <p>Loading game cards...</p>
           </div>
           <div className={MatchStyle.FetchingMode}>
-            <p>{gameMode === 'marvel' ? 'Fetching Marvel characters...' : 'Preparing color cards...'}</p>
+            <p>{gameMode === 'marvel' ? 'Fetching Marvel characters...' : gameMode === 'pokémon' ? 'Fetching Pokémon characters' : 'Preparing color cards...'}</p>
           </div>
         </div>
       </>
@@ -83,11 +97,15 @@ function Match({ playerName, setPlayerName }) {
         &larr; Back
       </ButtonSound>
 
-      <ButtonSound style={{ position: 'relative', left: 500, bottom: 40 }} onClick={() => handleGameReset()}>
+      <ButtonSound style={{ position: 'relative', left: 525, bottom: 40 }} onClick={() => handleGameReset()}>
         Reset
       </ButtonSound>
 
-      {matchState.apiError && <p style={{ color: 'red' }}>{matchState.apiError}</p>}
+      <MatchTimer gameTimer={gameTimer} setGameTimer={setGameTimer} />
+
+      {matchState.apiError && (
+        <p style={{ fontSize: 28, color: 'red', textShadow: '1px 1px black' }}>{matchState.apiError}</p>
+      )}
       <GameBoard
         gameDeck={matchState.gameDeck}
         flippedCards={matchState.flippedCards}
