@@ -5,7 +5,7 @@ import ButtonSound from '../context/ButtonSound';
 import EndgameStyle from '../css/modules/Endgame.module.css';
 import Edit from '../assets/edit.png';
 
-function Endgame({ playerName }) {
+function Endgame({ playerName, setGameTimer }) {
   const navigate = useNavigate();
   const location = useLocation();
   const mode = location.state?.mode || localStorage.getItem('lastMode') || 'color';
@@ -24,6 +24,7 @@ function Endgame({ playerName }) {
 
   const handleGameSelect = (option) => {
     if (option === 'Play Again') {
+      if (setGameTimer) setGameTimer(Date.now());
       localStorage.setItem('lastMode', mode);
       navigate('/match', { state: { mode } });
     }
@@ -45,6 +46,28 @@ function Endgame({ playerName }) {
     }
     setSortScore(order);
   };
+
+  //numbers need to be parsed since it's time
+  const sortByTime = (order) => {
+    //convert time to seconds for sorting
+    const parseTime = (t) => {
+       if (typeof t === "number") return t;
+       if (!t) return 0;
+       const [min, sec] = t.split(":").map(Number);
+       return min * 60 + sec;
+    }
+    if (order === "Fastest") {
+      const sortedTime = [...history].sort((a,b) => parseTime(a.time) - parseTime(b.time));
+      setHistory(sortedTime);
+    } else if (order === "Slowest") {
+       const sortedTime = [...history].sort((a,b) => parseTime(b.time) - parseTime(a.time));
+       setHistory(sortedTime);
+    } else {
+      const originalSort = JSON.parse(localStorage.getItem("matchStats")) || [];
+      setHistory(originalSort);
+    }
+    setSortScore(order);
+  }
 
   const handlePreviousPage = (page) => {
     if (page > 1) {
@@ -99,7 +122,13 @@ function Endgame({ playerName }) {
       <h1>Game Over!</h1>
       <div className={EndgameStyle.leaderboard}>
         <div className={EndgameStyle.statsInfo}>
-          <h2 style={{ fontSize: 28, textDecoration: 'underline' }}>Player Stats</h2>
+          <h2 style={{ fontSize: 28, textDecoration: 'underline', margin: "2px" }}>Player Stats</h2>
+        </div>
+
+        <div className={EndgameStyle.Titles}>
+            <h3 style={{marginRight: 20}}>Name:</h3>
+            <h3>Score:</h3>
+            <h3>Time:</h3>
         </div>
 
         <div className={EndgameStyle.statsInfo}>
@@ -108,9 +137,10 @@ function Endgame({ playerName }) {
               //Fallback to empty string/zero if missing
               const player = entry?.player ?? '';
               const score = entry?.score ?? 0;
+              const time = entry?.time ?? 0;
               return (
                 <div
-                  key={player + score + idx}
+                  key={player + score + time + idx}
                   style={{ display: 'flex', alignItems: 'center', marginBottom: 16, width: '100%' }}
                 >
                   {editingIndex === idx ? (
@@ -119,14 +149,13 @@ function Endgame({ playerName }) {
                         type="text"
                         value={editedName}
                         onChange={(event) => setEditedName(event.target.value)}
-                        style={{ marginRight: 0 }}
+                        style={{ marginRight: 2, padding: "8px 2px", fontSize: 18, textAlign: "center" }}
                       />
                       <ButtonSound
                         className={EndgameStyle.Btn}
                         onClick={() => {
                           const updated = history.map((item) =>
-                            item === editingEntry ? { ...item, player: editedName } : item
-                          );
+                            item === editingEntry ? { ...item, player: editedName } : item);
                           setHistory(updated);
                           localStorage.setItem('matchStats', JSON.stringify(updated));
                           setEditingIndex(null);
@@ -162,8 +191,9 @@ function Endgame({ playerName }) {
                         />
                       </ButtonSound>
                       {/* textOverflow if name's certain number of characters long */}
-                      <span className={EndgameStyle.Player}>{player}:&nbsp;</span>
-                      <span>{score}</span>
+                      <span className={`${EndgameStyle.Player} ${player.length > 12 ? EndgameStyle.PlayerEllipsis : ""}`}>{player}:&nbsp;</span>
+                      <span style={{marginRight: 40}}>{score}</span>
+                      <span>{time}</span>
                     </>
                   )}
                 </div>
@@ -181,11 +211,20 @@ function Endgame({ playerName }) {
               name="sortByScore"
               className={EndgameStyle.SortByScore}
               value={sortScore}
-              onChange={(event) => sortByScore(event.target.value)}
+              onChange={(event) => {
+                 const value = event.target.value;
+                 if (value === "HighScore" || value === "LowScore" || value === "default") {
+                   sortByScore(value);
+                 } else if (value === "Fastest" || value === "Slowest") {
+                   sortByTime(value);
+                 }
+              }}
             >
               <option value="default"></option>
-              <option value="HighScore">High</option>
-              <option value="LowScore">Low</option>
+              <option value="HighScore">High Score</option>
+              <option value="LowScore">Low Score</option>
+              <option value="Fastest">Fastest Time</option>
+              <option value="Slowest">Slowest Time</option>
             </select>
           </ButtonSound>
         </div>

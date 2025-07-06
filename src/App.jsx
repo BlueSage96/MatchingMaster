@@ -14,6 +14,7 @@ import background from './assets/background.png';
 
 function App() {
   const [playerName, setPlayerName] = useState('');
+  const [gameTimer, setGameTimer] = useState(null);
   return (
     <div className="fullscreen" style={{ backgroundImage: `url(${cover})` }}>
       <div
@@ -26,7 +27,8 @@ function App() {
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/marvelMatchMode" element={<SGM />} />
-          <Route path="/match" element={<Match playerName={playerName} setPlayerName={setPlayerName}/>} />
+          <Route path="/match" element={<Match playerName={playerName} setPlayerName={setPlayerName} 
+          gameTimer={gameTimer} setGameTimer={setGameTimer}/>} />
           <Route path="/gameOver" element={<Endgame playerName={playerName} setPlayerName={setPlayerName}/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>

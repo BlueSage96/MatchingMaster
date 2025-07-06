@@ -1,11 +1,7 @@
 import Card from '../shared/Card';
 import GBStyle from '../css/modules/GameBoard.module.css';
-function GameBoard({
-  gameDeck,
-  flippedCards,
-  matchedCards,
-  handleFlippedCards,
-}) {
+
+function GameBoard({gameDeck, flippedCards, matchedCards, handleFlippedCards}) {
   return (
     <>
       <div className={GBStyle.MatchHeader}>
