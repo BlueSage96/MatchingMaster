@@ -13,10 +13,10 @@ async function MarvelAPIFetch (marvelMode) {
             throw new Error("Marvel API keys are missing in environment variables");
         }
 
-        const characterUrl = `https://gateway.marvel.com/v1/public/characters?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
-        const comicUrl = `https://gateway.marvel.com/v1/public/comics?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
+        const characterURL = `https://gateway.marvel.com/v1/public/characters?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
+        const comicURL = `https://gateway.marvel.com/v1/public/comics?limit=${limit}&offset=${offset}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
         
-        const url = marvelMode === 'characters' ? characterUrl : comicUrl;
+        const url = marvelMode === 'characters' ? characterURL : comicURL;
         const response = await fetch(url);
 
         if (!response.ok){

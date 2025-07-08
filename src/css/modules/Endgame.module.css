@@ -69,6 +69,10 @@
     white-space: nowrap;
 }
 
+.Scores {
+    margin-right: 40px;
+}
+
 .SortByScore {
     background: black;
     border: 1px 1px gray;

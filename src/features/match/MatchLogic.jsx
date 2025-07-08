@@ -62,6 +62,16 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
       return result;
     }
 
+    // centralizes duplication
+    const prepGameDeck = (duplicates) => {
+       const duplicated = [...duplicates, ...duplicates];
+       return fisherYatesShuffle(duplicated);
+    }    
+
+    const fallbackToColors = (baseColors, shuffle) => {
+      return prepGameDeck(baseColors, shuffle);
+    }
+
     /* Fetch images from Marvel API - fall back to color if it can't fetch */
     async function loadMarvelData () {
       try {
@@ -71,22 +81,19 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
           if (!images || images.length < 9) {
             throw new Error('Not enough character images returned');
           }
-          const duplicates = [...images, ...images];
-          const shuffled = fisherYatesShuffle(duplicates);
-          dispatch({ type: matchActions.setGameDeck, value: shuffled });
+          const deck = prepGameDeck(images);
+          dispatch({ type: matchActions.setGameDeck, value: deck });
         } else if (marvelMode === 'comic') {
           const images = await MarvelFetch(marvelMode);
           if (!images || images.length < 9) {
             throw new Error('Not enough comic images returned');
           }
-          const duplicates = [...images, ...images];
-          const shuffled = fisherYatesShuffle(duplicates);
-          dispatch({ type: matchActions.setGameDeck, value: shuffled });
+          const deck = prepGameDeck(images)
+          dispatch({ type: matchActions.setGameDeck, value: deck });
         }
       } catch (error) {
-        const doubleColors = [...baseColors, ...baseColors];
-        const shuffled = fisherYatesShuffle(doubleColors);
-        dispatch({ type: matchActions.setGameDeck, value: shuffled });
+        const deck = fallbackToColors(baseColors, fisherYatesShuffle);
+        dispatch({ type: matchActions.setGameDeck, value: deck });
 
         console.error('Error loading characters: ', error);
         dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
@@ -102,13 +109,11 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
         if (!images || images.length < 9) {
            throw new Error('Not enough Pokémon images returned');
         }
-        const duplicates = [...images,...images];
-        const shuffled = fisherYatesShuffle(duplicates);
-        dispatch({ type: matchActions.setGameDeck, value: shuffled });
+        const deck = prepGameDeck(images);
+        dispatch({ type: matchActions.setGameDeck, value: deck });
       } catch (error) {
-         const doubleColors = [...baseColors,...baseColors];
-         const shuffled = fisherYatesShuffle(doubleColors);
-         dispatch({ type: matchActions.setGameDeck, value: shuffled});
+         const deck = fallbackToColors(fisherYatesShuffle);
+         dispatch({ type: matchActions.setGameDeck, value: deck});
 
          console.error('Error loading characters:', error);
          dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
@@ -129,10 +134,10 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
         } else if (gameMode === 'pokémon') {
            await loadPokéData();
         } else {
-          const duplicated = [...baseColors, ...baseColors];
+          const deck = fallbackToColors(baseColors, fisherYatesShuffle)
           dispatch({
             type: matchActions.setGameDeck,
-            value: fisherYatesShuffle(duplicated)
+            value: deck
           });
           dispatch({ type: matchActions.setIsLoading, value: false });
         }

@@ -4,7 +4,7 @@ function MatchTimer({gameTimer, setGameTimer}) {
     const Timer = TimerStyle.span`
         color: white;
         position: absolute;
-        bottom: 200px;
+        bottom: 50px;
         left: width/2;
         font-size: 30px;
     `
