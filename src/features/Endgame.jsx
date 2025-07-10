@@ -191,7 +191,7 @@ function Endgame({ playerName, setGameTimer }) {
                         />
                       </ButtonSound>
                       {/* textOverflow if name's certain number of characters long */}
-                      <span className={`${EndgameStyle.Player} ${player.length > 12 ? EndgameStyle.PlayerEllipsis : ""}`}>{player}:&nbsp;</span>
+                      <span className={`${EndgameStyle.Player} ${player.length > 10 ? EndgameStyle.PlayerEllipsis : ""}`}>{player}:&nbsp;</span>
                       <span className={EndgameStyle.Scores}>{score}</span>
                       <span>{time}</span>
                     </>

@@ -69,7 +69,7 @@ async function MarvelAPIFetch (marvelMode) {
         });
 
         if (clean.length < 9) {
-            throw new Error('Not enough valid character images found');
+            throw new Error(`Not enough valid ${marvelMode} images found`);
         }
         //Return only the URL strings for the first 9 characters
         const cleanImages = clean

@@ -134,11 +134,9 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
         } else if (gameMode === 'pokémon') {
            await loadPokéData();
         } else {
-          const deck = fallbackToColors(baseColors, fisherYatesShuffle)
+          const deck = fallbackToColors(baseColors, fisherYatesShuffle);
           dispatch({
-            type: matchActions.setGameDeck,
-            value: deck
-          });
+            type: matchActions.setGameDeck, value: deck});
           dispatch({ type: matchActions.setIsLoading, value: false });
         }
       }
