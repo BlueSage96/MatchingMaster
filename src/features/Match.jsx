@@ -11,7 +11,8 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
 
   const {
     handleFlippedCards, matchState,matchActions,dispatch,nameSubmitted, setNameSubmitted,
-    gameMode, navigate, fisherYatesShuffle, loadMarvelData, loadPokéData} = MatchLogic(playerName, setPlayerName, gameTimer);
+    gameMode, marvelMode, animalMode, navigate, fisherYatesShuffle, loadGameData } = 
+    MatchLogic(playerName, setPlayerName, gameTimer);
 
   //reset when leaving page
   useEffect(() => {
@@ -32,11 +33,10 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
 
     if (gameMode === 'color') {
        dispatch({ type: matchActions.setGameDeck, value: fisherYatesShuffle([...baseColors, ...baseColors] )});
-    } else if (gameMode === 'marvel') {
-       loadMarvelData();
-    } else if (gameMode === 'pokémon') {
-       loadPokéData();
+    } else {
+      loadGameData(gameMode, marvelMode, animalMode);
     }
+
   };
 
   if (matchState.isLoading) {
@@ -47,7 +47,8 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
             <p>Loading game cards...</p>
           </div>
           <div className={MatchStyle.FetchingMode}>
-            <p>{gameMode === 'marvel' ? 'Fetching Marvel characters...' : gameMode === 'pokémon' ? 'Fetching Pokémon characters' : 'Preparing color cards...'}</p>
+            <p>{gameMode === 'marvel' ? `Fetching Marvel ${marvelMode}...` : gameMode === 'pokémon' ? 'Fetching Pokémon characters...' : 
+            gameMode === 'animals' ? `Fetching ${animalMode} cards...` : 'Preparing color cards...'}</p>
           </div>
         </div>
       </>
@@ -97,14 +98,14 @@ function Match({ playerName, setPlayerName, gameTimer, setGameTimer }) {
         &larr; Back
       </ButtonSound>
 
-      <ButtonSound style={{ position: 'relative', left: 525, bottom: 40 }} onClick={() => handleGameReset()}>
+      <ButtonSound className={MatchStyle.Reset} onClick={() => handleGameReset()}>
         Reset
       </ButtonSound>
 
       <MatchTimer gameTimer={gameTimer} setGameTimer={setGameTimer} />
 
       {matchState.apiError && (
-        <p style={{ fontSize: 28, color: 'red', textShadow: '1px 1px black' }}>{matchState.apiError}</p>
+        <p className={MatchStyle.Error}>{matchState.apiError}</p>
       )}
       <GameBoard
         gameDeck={matchState.gameDeck}

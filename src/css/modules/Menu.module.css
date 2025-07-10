@@ -24,7 +24,7 @@
     bottom: 250px;
   }
   
-  .ColModeBtn, .MarModeBtn, .PokéModeBtn {
+  .ColModeBtn, .MarModeBtn, .AniModeBtn, .PokéModeBtn {
     position: static;
     display: block;
     z-index: 1;
@@ -32,19 +32,41 @@
     box-shadow: none !important;
   }
 
-  .Color, .Marvel {
-    width: 160px;
+  .Color, .Marvel, .Animals, .Pokémon {
+    width: 170px;
     height: 200px;
     display: block;
+    position: relative;
+  }
+
+  .Color {
+    width: 180px;
+    transform: scaleY(1.1025);
+  }
+
+  .Marvel {
+    width: 180px;
+    transform: scaleY(1.1025);
+    top: -2px;
+  }
+
+  .Animals {
+     border: 5px solid white;
+     border-radius: 40px;
   }
 
   .Pokémon {
+     transform: scaleY(1.058);
+     top: -4px;
+  }
+
+  /* .Pokémon {
     width: 225px;
     height: 250px;
     display: block;
     position: relative;
     top: 30px;
-  }
+  } */
 
   .StartContainer {
     display: flex;
