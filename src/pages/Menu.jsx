@@ -5,6 +5,7 @@ import GameLogo from '../assets/GameLogo.png';
 import Color from '../assets/color.png';
 import Marvel from '../assets/marvel.png';
 import Pokémon from '../assets/pokémon.png';
+import Animals from '../assets/animals.png';
 import Start from '../assets/start.png';
 import ButtonSound from '../context/ButtonSound';
 
@@ -28,6 +29,12 @@ function Menu() {
 
           <ButtonSound invisible className={MenuStyle.MarModeBtn} onClick={() => navigate('/marvelMatchMode')}>
             <img className={MenuStyle.Marvel} src={Marvel} alt="Marvel mode button" />
+          </ButtonSound>
+
+          <ButtonSound invisible className={MenuStyle.AniModeBtn} onClick={() => navigate('/animals', {
+            state: {mode: 'animals'}
+          })}>
+            <img className={MenuStyle.Animals} src={Animals} alt="Animals mode button"/>
           </ButtonSound>
 
           <ButtonSound invisible className={MenuStyle.PokéModeBtn} onClick={() => handleSelectMode('pokémon')}>

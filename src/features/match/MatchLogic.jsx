@@ -1,8 +1,8 @@
-
 import { useState, useEffect, useRef, useCallback, useReducer } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MarvelFetch from '../../API/MarvelAPIFetch';
-import Pokéfetch from "../../API/PokémonAPIFetch";
+import PokéFetch from "../../API/PokémonAPIFetch";
+import AnimalsFetch from '../../API/AnimalsAPIFetch';
 import CardClick from '../../assets/CardFlip.mp3';
 import { useSound } from '../../context/SoundContext';
 
@@ -24,8 +24,17 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
     const location = useLocation();
     const modeFromState = location.state?.mode;
     const modeFromStorage = localStorage.getItem('lastMode');
-    const gameMode = modeFromState || modeFromStorage || 'color';
     const marvelMode = location.state?.marvelMode || 'characters';
+    const animalMode = location.state?.animalMode || 'animals';
+
+    let gameMode = modeFromState || modeFromStorage || 'color';
+
+    if (location.state?.animalMode && gameMode !== 'animals') {
+      gameMode = 'animals';
+    }
+    if (location.state?.marvelMode && gameMode !== 'marvel') {
+      gameMode = 'marvel';
+    }
     
     const totalTime = Math.floor((Date.now() - gameTimer) / 1000);
     const minutes = Math.floor(totalTime / 60);
@@ -72,53 +81,39 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
       return prepGameDeck(baseColors, shuffle);
     }
 
-    /* Fetch images from Marvel API - fall back to color if it can't fetch */
-    async function loadMarvelData () {
+    /* Fetch images from APIs - fall back to color if it can't fetch */
+    async function loadGameData (mode, marvelMode, animalMode) {
       try {
         dispatch({ type: matchActions.setIsLoading, value: true });
-        if (marvelMode === 'characters') {
-          const images = await MarvelFetch(marvelMode);
-          if (!images || images.length < 9) {
-            throw new Error('Not enough character images returned');
-          }
-          const deck = prepGameDeck(images);
-          dispatch({ type: matchActions.setGameDeck, value: deck });
-        } else if (marvelMode === 'comic') {
-          const images = await MarvelFetch(marvelMode);
-          if (!images || images.length < 9) {
-            throw new Error('Not enough comic images returned');
-          }
-          const deck = prepGameDeck(images)
-          dispatch({ type: matchActions.setGameDeck, value: deck });
+        let images;
+        if (mode === 'marvel') {
+          images = await MarvelFetch(marvelMode);
+        } else if (mode === 'pokémon') {
+          images = await PokéFetch();
+        } else if (mode === 'animals') {
+          images = await AnimalsFetch(animalMode);
+        } else if (mode === 'color') {
+           const deck = fallbackToColors(baseColors, fisherYatesShuffle);
+           dispatch({ type: matchActions.setGameDeck, value: deck });
+           return;
+        } else {
+           //unknown mode fallback to colors
+           const deck = fallbackToColors(baseColors, fisherYatesShuffle);
+           dispatch({ type: matchActions.setGameDeck, value: deck });
+           return;
         }
-      } catch (error) {
-        const deck = fallbackToColors(baseColors, fisherYatesShuffle);
-        dispatch({ type: matchActions.setGameDeck, value: deck });
-
-        console.error('Error loading characters: ', error);
-        dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
-      } finally {
-        dispatch({ type: matchActions.setIsLoading, value: false });
-      }
-    }
-
-    async function loadPokéData () {
-      try {
-        dispatch({ type: matchActions.setIsLoading, value: true});
-        const images = await Pokéfetch();
         if (!images || images.length < 9) {
-           throw new Error('Not enough Pokémon images returned');
+          throw new Error('Not enough images returned');
         }
         const deck = prepGameDeck(images);
         dispatch({ type: matchActions.setGameDeck, value: deck });
       } catch (error) {
-         const deck = fallbackToColors(fisherYatesShuffle);
-         dispatch({ type: matchActions.setGameDeck, value: deck});
-
-         console.error('Error loading characters:', error);
-         dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
+        const deck = fallbackToColors(baseColors, fisherYatesShuffle);
+        dispatch({ type: matchActions.setGameDeck, value: deck });
+        dispatch({ type: matchActions.setApiError, value: 'Falling back to color mode due to API error' });
+        console.error('Error loading data:', error);
       } finally {
-         dispatch({ type: matchActions.setIsLoading, value: false });
+        dispatch({ type: matchActions.setIsLoading, value: false });
       }
     }
 
@@ -129,16 +124,7 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
         dispatch({ type: matchActions.setMatchedCards, value: [] });
         dispatch({ type: matchActions.setFlippedCards, value: [] });
 
-        if (gameMode === 'marvel') {
-          await loadMarvelData();
-        } else if (gameMode === 'pokémon') {
-           await loadPokéData();
-        } else {
-          const deck = fallbackToColors(baseColors, fisherYatesShuffle);
-          dispatch({
-            type: matchActions.setGameDeck, value: deck});
-          dispatch({ type: matchActions.setIsLoading, value: false });
-        }
+        await loadGameData(gameMode, marvelMode, animalMode);
       }
       setupDeck();
       return () => {};
@@ -242,10 +228,11 @@ function MatchLogic (playerName, setPlayerName, gameTimer) {
       nameSubmitted,
       setNameSubmitted,
       gameMode,
+      marvelMode,
+      animalMode,
       navigate,
       fisherYatesShuffle,
-      loadMarvelData,
-      loadPokéData,
+      loadGameData
    }
     
 }

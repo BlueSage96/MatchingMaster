@@ -25,18 +25,15 @@
     box-shadow: none !important;
   }
 
-  .Character {
-    width: 160px;
+  .characters, .comic, .cats, .dogs {
+    width: 170px;
     height: 200px;
     display: block;
     position: relative;
-    bottom: 5px;
-  }
-
-  .Comic {
-    width: 160px;
-    height: 210px;
-    display: block;
+    bottom: 20px;
+    right: 25px;
+    border: 5px solid white;
+    border-radius: 40px;
   }
 
 .StartContainer {
@@ -53,7 +50,7 @@
     z-index: 1;
     cursor: pointer;
     box-shadow: none !important;
-    bottom: 120px;
+    bottom: 100px;
   }
 
   .Start {
