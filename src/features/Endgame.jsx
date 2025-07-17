@@ -140,9 +140,7 @@ function Endgame({ playerName, setGameTimer }) {
               const time = entry?.time ?? 0;
               return (
                 <div
-                  key={player + score + time + idx}
-                  style={{ display: 'flex', alignItems: 'center', marginBottom: 16, width: '100%' }}
-                >
+                  key={player + score + time + idx} className={EndgameStyle.StatsRow}>
                   {editingIndex === idx ? (
                     <>
                       <input
@@ -173,6 +171,7 @@ function Endgame({ playerName, setGameTimer }) {
                   ) : (
                     <>
                       <ButtonSound
+                        invisible
                         className={EndgameStyle.EditBtnWrapper}
                         style={{ marginRight: 8 }}
                         onClick={() => {
@@ -191,9 +190,9 @@ function Endgame({ playerName, setGameTimer }) {
                         />
                       </ButtonSound>
                       {/* textOverflow if name's certain number of characters long */}
-                      <span className={`${EndgameStyle.Player} ${player.length > 10 ? EndgameStyle.PlayerEllipsis : ""}`}>{player}:&nbsp;</span>
-                      <span className={EndgameStyle.Scores}>{score}</span>
-                      <span>{time}</span>
+                      <span className={`${EndgameStyle.StatsName} ${player.length > 10 ? EndgameStyle.PlayerEllipsis : ""}`}>{player}:&nbsp;</span>
+                      <span className={EndgameStyle.StatScores}>{score}</span>
+                      <span className={EndgameStyle.StasTime}>{time}</span>
                     </>
                   )}
                 </div>
