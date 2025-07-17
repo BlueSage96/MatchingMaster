@@ -35,54 +35,40 @@
   box-shadow: none !important;
   background: none;
   z-index: 1;
-  top: -40px;
+  top: -10px;
 }
 
 .Settings, .Home, .Info {
     filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
-}
-
-.Settings {
-  width: 125px;
-  height: 135px;
-  position: relative;
-  top: 5px;
+    width: 85px;
+    height: 85px;
 }
 
 .Home {
-  width: 105px;
-  height: 112px;
   position: relative;
-  top: 3px;
+  right: -50px;
 }
 
 .Info {
-  width: 110px;
-  height: 115;
   position: relative;
-  top: 2px;
+  right: -50px;
 }
 
 .SetText, .HomeText, .InfoText {
     font-size: 20px;
+    position: relative;
+    top: 40px;
+    right: 80px;
 }
 
-.SetText {
-    position: absolute;
-    left: 55px;
-    top: 135px;
-}
 
 .HomeText {
-    position: absolute;
-    left: 50px;
-    top: 128px;
+  right: 30px;
+
 }
 
 .InfoText {
-    position: absolute;
-    right: 35px;
-    top: 125px;
+    right: 45px;
 }
 
 @media (max-width: 600px) {

@@ -33,7 +33,7 @@
 }
 
 .EditBtnWrapper {
-    padding: 2px;
+    padding: 20px;
     border-radius: 6px;
     border: none;
     outline: none;
@@ -48,19 +48,19 @@
   }
 
 .EditBtn {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     box-shadow: none !important;
+    outline: 2px solid black;
+    border-radius: 6px;
+    padding: 0;
+    margin: 0;
 }
 
-.Player {
-    min-width: 30px;
-    max-width: 120px;
-    flex-grow: 1;
-    text-align: left;
-    margin-right: 10px;
+.StatsName {
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .PlayerEllipsis {
@@ -69,8 +69,18 @@
     white-space: nowrap;
 }
 
-.Scores {
-    margin-right: 40px;
+.StatsRow {
+    display: grid; 
+    grid-template-columns: 40px 1fr 80px 80px;
+    align-items: center;
+    /* justify-content: flex-start; */
+    gap: 12px;
+    width: 100%; 
+}
+
+.StatScores, .StatsTime {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
 .SortByScore {
